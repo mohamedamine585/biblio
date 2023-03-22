@@ -50,7 +50,7 @@ class _LecteurpageState extends State<Lecteurpage> {
                   || element.prenom.toUpperCase().contains(value)  || (element.nom.toUpperCase().contains(value) ))
                    lecs.add(element);
                   
-                  });  print(lecs);
+                  }); 
                 });
               },
               controller: query,
@@ -74,11 +74,11 @@ class _LecteurpageState extends State<Lecteurpage> {
                 future: GestionLecteurs().get_lecteurs(mySqlConnection: mysqlconn),
                 builder: (context, snapshot) {
                    Lecteurs = snapshot.data  ;
-                  
-                   print(Lecteurs);
+
                   return ListView.builder(
                       itemCount: lecs.length,
                       itemBuilder: (context,index){
+                      final temps_abonn_restant =30- DateTimeRange(start: lecs.elementAt(index).date_abonnement, end: DateTime.now()).duration.inDays;
                       
                       return ListTile(
                       
@@ -89,27 +89,35 @@ class _LecteurpageState extends State<Lecteurpage> {
                             child: Container(
                               height: 50,
                               width: 100,
-                              child: Row(
-                                children: [
-                                  SizedBox(width: 50,),
-                                  Container(
-                                    width: 550,
-                                    child: Text("${lecs.elementAt(index).nom} ${lecs.elementAt(index).prenom}")),
-                                  Text("Date d'entrée ${lecs.elementAt(index).date_entree.day}-${lecs.elementAt(index).date_entree.month}-${lecs.elementAt(index).date_entree.year}    ${lecs.elementAt(index).nb_prets } prets"),
-                                  SizedBox(width: 50,),
-                                  RatingBar.builder(
-   initialRating: (lecs.elementAt(index).fidelite).toDouble(),
-   direction: Axis.horizontal,
-   allowHalfRating: true,
-   itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
-   itemBuilder: (context, _) => Icon(
-     Icons.star,
-     color: Colors.amber,
-   ),
-   onRatingUpdate: (rating) {
-     return;
-   },)
-                                ],
+                              child: SingleChildScrollView(
+                                child: Row(
+                                  children: [
+                                    SizedBox(width: 50,),
+                                    SingleChildScrollView(
+                                      child: Container(
+                                        width: 400,
+                                        child: Text("${lecs.elementAt(index).nom} ${lecs.elementAt(index).prenom}")),
+                                    ),
+                                    Text("Date d'entrée : ${lecs.elementAt(index).date_entree.day}-${lecs.elementAt(index).date_entree.month}-${lecs.elementAt(index).date_entree.year}    ${lecs.elementAt(index).nb_prets } prets "),
+                                    Text("    Abonnement : A${lecs.elementAt(index).abonnement}  ${lecs.elementAt(index).date_abonnement.day}-${lecs.elementAt(index).date_abonnement.month}-${lecs.elementAt(index).date_abonnement.year} : ${lecs.elementAt(index).date_abonnement.hour}:${lecs.elementAt(index).date_abonnement.minute}",style: TextStyle(color: Colors.blue),),
+                                  
+                                    Text("  Reste : ${temps_abonn_restant}" ,style: TextStyle(color: temps_abonn_restant > 0 ? Colors.black : Colors.red),),
+                                    SizedBox(width: 50,),
+                                    RatingBar.builder(
+                                      itemSize: 20,
+                                 initialRating: (lecs.elementAt(index).fidelite).toDouble(),
+                                 direction: Axis.horizontal,
+                                 allowHalfRating: true,
+                                 itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+                                 itemBuilder: (context, _) => Icon(
+                                   Icons.star,
+                                   color: Colors.amber,
+                                 ),
+                                 onRatingUpdate: (rating) {
+                                   return;
+                                 },)
+                                  ],
+                                ),
                               ))),
                           ),
                         

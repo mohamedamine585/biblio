@@ -21,6 +21,7 @@ class _AjouterLecteurState extends State<AjouterLecteur> {
     late final TextEditingController email ; 
      late final TextEditingController cin ; 
       late final TextEditingController adresse ; 
+      bool ischecked1 = true, ischecked2 = false, ischecked3 = false;
      @override 
      void initState() {
     nom = TextEditingController();
@@ -107,9 +108,53 @@ class _AjouterLecteurState extends State<AjouterLecteur> {
                 ),
                         ),
               ),
+              Container(
+                height: 20,
+                width: 200,
+                child: Row(
+                  children: [
+                    Text("A1"),
+                    Checkbox(value: ischecked1, onChanged:(ischecked1){
+                      setState(() {
+                        ischecked1 = !ischecked1!;
+                        if(ischecked2)
+                          ischecked2 = !ischecked2 ;
+                        if(ischecked3)
+                          ischecked3 = !ischecked3;
+                      });
+                    }),
+                     Text("A2"),
+                    Checkbox(value: ischecked2, onChanged:(ischecked1){
+                      setState(() {
+                        ischecked2 = !ischecked2;
+                        if(ischecked1!)
+                          ischecked1 = !ischecked1! ;
+                        if(ischecked3)
+                          ischecked3 = !ischecked3;
+                      });
+                    }),
+                     Text("Premium"),
+                    Checkbox(value: ischecked3, onChanged:(ischecked1){
+                      setState(() {
+                        ischecked3 = !ischecked3;
+                        if(ischecked2)
+                          ischecked2 = !ischecked2 ;
+                        if(ischecked1!)
+                          ischecked1 = !ischecked1!;
+                      });
+                    }),
+            ]  ),
+              ),
                 SizedBox(height: 15),
               TextButton(onPressed: ()async{
-                final lecteur = await GestionLecteurs().add_lecteur(mySqlConnection: mySqlConnection, nom: nom.text, prenom: prenom.text, email: email.text, cin:int.parse(cin.text), addresse: adresse.text);
+                int abonnement = 3;
+                  if(ischecked1)
+                     abonnement = 3;
+                  if(ischecked2)
+                     abonnement = 5 ;
+                  if(ischecked3)
+                     abonnement = 9;
+                final lecteur = await GestionLecteurs().add_lecteur(mySqlConnection: mySqlConnection, nom: nom.text, prenom: prenom.text, email: email.text, cin:int.parse(cin.text), addresse: adresse.text,abonnement: abonnement );
                 print(lecteur);
                 Navigator.of(context).pop();
               }, child: const Text("Ajouter lecteur"))

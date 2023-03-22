@@ -109,7 +109,7 @@ class _LecteurpageState extends State<Lecteurpage> {
                                  direction: Axis.horizontal,
                                  allowHalfRating: true,
                                  itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
-                                 itemBuilder: (context, _) => Icon(
+                                 itemBuilder: (context, _) =>const Icon(
                                    Icons.star,
                                    color: Colors.amber,
                                  ),

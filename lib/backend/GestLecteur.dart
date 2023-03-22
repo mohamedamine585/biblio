@@ -39,15 +39,14 @@ class GestionLecteurs  {
  Future<Lecteur?> add_lecteur(
   {required MySqlConnection mySqlConnection ,
     required String nom , required String prenom ,required String email ,
-    required int? cin , required String? addresse,required int abonnement
+    required int? cin , required String? addresse,required int abonnement,
   }
  )async{
     try {
       final results = mySqlConnection.query(
-        "insert into lecteur(nomlecteur,prenomlecteur,email,addresse,cin,date_entree,date_abb,nb_prets,nb_prets_actuels,nb_alertes,fidelite,nb_ouv_max,abonnement) values (?,?,?,?,?,?,?,?,?,?,?,?,?)",[
-          nom,prenom,email,addresse,cin,DateTime.now().toUtc(),DateTime.now().toUtc(),0,0,0,0,abonnement*3,abonnement
+        "insert into lecteur(nomlecteur,prenomlecteur,email,addresse,cin,date_entree,date_abb,nb_prets,nb_prets_actuels,nb_alertes,fidelite,nb_ouv_max,abonnement,nb_abonn) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?)",[
+          nom,prenom,email,addresse,cin,DateTime.now().toUtc(),DateTime.now().toUtc(),0,0,0,0,abonnement*3,abonnement,1
         ]);
-      print(results);
       return Lecteur(nom, prenom, email, cin ?? -1, addresse, DateTime.now(),DateTime.now(), 0,0,0,0,abonnement*3,abonnement,1);
        
     } catch (e) {

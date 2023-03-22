@@ -1,39 +1,48 @@
-
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/backend/GestLecteur.dart';
+import 'package:flutter_application_1/backend/GestPersonnel.dart';
 import 'package:mysql1/mysql1.dart';
 
-class AjouterLecteur extends StatefulWidget {
-  const AjouterLecteur({super.key});
+class AjouterPersonnel extends StatefulWidget {
+  const AjouterPersonnel({super.key});
 
   @override
-  State<AjouterLecteur> createState() => _AjouterLecteurState();
+  State<AjouterPersonnel> createState() => _AjouterPersonnelState();
 }
 
-class _AjouterLecteurState extends State<AjouterLecteur> {
+class _AjouterPersonnelState extends State<AjouterPersonnel> {
   @override
   late final TextEditingController nom ; 
    late final TextEditingController prenom ;
     late final TextEditingController email ; 
      late final TextEditingController cin ; 
       late final TextEditingController adresse ; 
+            late final TextEditingController mot_de_passe ; 
+                  late final TextEditingController Cmotdepasse ; 
+                  late final TextEditingController age ; 
+
+
       bool ischecked1 = true, ischecked2 = false, ischecked3 = false;
      @override 
      void initState() {
+      age = TextEditingController();
     nom = TextEditingController();
     prenom = TextEditingController();
     email = TextEditingController();
     cin = TextEditingController();
     adresse = TextEditingController();
-
+  mot_de_passe = TextEditingController();
+  Cmotdepasse = TextEditingController();
   }
   @override 
   void dispose() {
+    age.dispose();
     nom.dispose();
     prenom.dispose();
     cin.dispose();
     adresse.dispose();
     email.dispose();
+    Cmotdepasse.dispose();
+    mot_de_passe.dispose();
     super.dispose();
   }
   
@@ -42,7 +51,7 @@ class _AjouterLecteurState extends State<AjouterLecteur> {
     final MySqlConnection mySqlConnection = ModalRoute.of(context)?.settings.arguments as MySqlConnection;
     return  Scaffold(
       appBar: AppBar(
-        title:const Center(child: const Text("Ajouter un Lecteur")),
+        title:const Center(child: const Text("Ajouter un Personnel")),
       ),
       body: Center(
         child: Column(
@@ -53,7 +62,7 @@ class _AjouterLecteurState extends State<AjouterLecteur> {
               child: TextField(
                 controller: nom,
                 decoration: InputDecoration(
-                  hintText:"Nom du lecteur",
+                  hintText:"Nom du Personnel",
                   hintStyle: TextStyle(fontStyle: FontStyle.italic)
                 ),
               ),
@@ -64,7 +73,7 @@ class _AjouterLecteurState extends State<AjouterLecteur> {
                 child: TextField(
                   controller: prenom,
                 decoration: InputDecoration(
-                  hintText:"Prenom du lecteur",
+                  hintText:"Prenom du Personnel",
                   hintStyle: TextStyle(fontStyle: FontStyle.italic)
                 ),
                         ),
@@ -75,11 +84,21 @@ class _AjouterLecteurState extends State<AjouterLecteur> {
                child: TextField(
                   controller: email,
                 decoration: InputDecoration(
-                  hintText:"email du lecteur : XXX@YYY.com",
+                  hintText:"email du Personnel : XXX@YYY.com",
                   hintStyle: TextStyle(fontStyle: FontStyle.italic)
                 ),
                        ),
              ),
+              Container(
+                 width: 400,
+                child: TextField(
+                  controller: age,
+                decoration: InputDecoration(
+                  hintText:"age",
+                  hintStyle: TextStyle(fontStyle: FontStyle.italic)
+                ),
+                        ),
+              ),
              SizedBox(height: 15),
             Container(
                width: 400,
@@ -88,7 +107,7 @@ class _AjouterLecteurState extends State<AjouterLecteur> {
                  
                 decoration: InputDecoration(
                 
-                  hintText:"CIN du lecteur",
+                  hintText:"CIN du Personnel",
                   hintStyle: TextStyle(fontStyle: FontStyle.italic)
                 ),
               ),
@@ -99,7 +118,32 @@ class _AjouterLecteurState extends State<AjouterLecteur> {
                 child: TextField(
                   controller: adresse,
                 decoration: InputDecoration(
-                  hintText:"Adresse du lecteur",
+                  hintText:"Adresse du Personnel",
+                  hintStyle: TextStyle(fontStyle: FontStyle.italic)
+                ),
+                        ),
+              ),
+               SizedBox(height: 15),
+              Container(
+                 width: 400,
+                child: TextField(
+                  controller: mot_de_passe,
+                obscureText: true,
+                decoration: InputDecoration(
+                  
+                  hintText:"Mot de passe du Personnel",
+                  hintStyle: TextStyle(fontStyle: FontStyle.italic)
+                ),
+                        ),
+              ),
+               SizedBox(height: 15),
+              Container(
+                 width: 400,
+                child: TextField(
+                  obscureText: true,
+                  controller: Cmotdepasse,
+                decoration: InputDecoration(
+                  hintText:"Confirmer le mot de passe ",
                   hintStyle: TextStyle(fontStyle: FontStyle.italic)
                 ),
                         ),
@@ -107,10 +151,10 @@ class _AjouterLecteurState extends State<AjouterLecteur> {
                SizedBox(height: 20,),
               Container(
                 height: 20,
-                width: 300,
+                width: 350,
                 child: Row(
                   children: [
-                    Text("Abonnement      : A1"),
+                    Text("grade  : president"),
                     Checkbox(value: ischecked1, onChanged:(isc1){
                       setState(() {
                         ischecked1 = isc1!;
@@ -120,7 +164,7 @@ class _AjouterLecteurState extends State<AjouterLecteur> {
                           ischecked3 = !ischecked3;
                       });
                     }),
-                     Text("A2"),
+                     Text("v-president"),
                     Checkbox(value: ischecked2, onChanged:(isc2){
                       setState(() {
                         ischecked2 = isc2!;
@@ -130,7 +174,7 @@ class _AjouterLecteurState extends State<AjouterLecteur> {
                           ischecked3 = !ischecked3;
                       });
                     }),
-                     Text("Premium"),
+                     Text("officier"),
                     Checkbox(value: ischecked3, onChanged:(isc3){
                       setState(() {
                         ischecked3 = isc3!;
@@ -144,18 +188,20 @@ class _AjouterLecteurState extends State<AjouterLecteur> {
               ),
                 SizedBox(height: 20),
               TextButton(onPressed: ()async{
-                int abonnement = 3;
+                String grade = "precident";
                   if(ischecked1)
-                     abonnement = 3;
+                     grade = "precident";
                   if(ischecked2)
-                     abonnement = 5 ;
+                     grade = "vice president";
                   if(ischecked3)
-                     abonnement = 9;
-                   
-                final lecteur = await GestionLecteurs().add_lecteur(mySqlConnection: mySqlConnection, nom: nom.text, prenom: prenom.text, email: email.text, cin:int.parse(cin.text), addresse: adresse.text,abonnement: abonnement );
-                print(lecteur);
-                Navigator.of(context).pop();
-              }, child: const Text("Ajouter lecteur"))
+                     grade = "officier";
+                if(mot_de_passe.text == Cmotdepasse.text) {
+                  final Personnel = await GestPersonnel().ajouter_personnel(mySqlConnection: mySqlConnection,grade: grade, mot_de_passe:mot_de_passe.text , nom: nom.text, prenom: prenom.text, email: email.text, cin:int.parse(cin.text), addresse: adresse.text, age: int.parse(cin.text));
+                  if(Personnel != null){
+                    Navigator.of(context).pop();
+                  }
+                }
+              }, child: const Text("Ajouter Personnel"))
       
           ],
         ),

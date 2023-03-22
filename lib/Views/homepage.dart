@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Consts.dart';
 import 'package:flutter_application_1/backend/MysqlDBConnection.dart';
+import 'package:flutter_application_1/backend/Personnel.dart';
 import 'package:mysql1/mysql1.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -16,15 +17,19 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-
-    return FutureBuilder<MySqlConnection?>(
-      future: mysqlconn.get_connection(),
-      builder: (context, snapshot) {
+    final route_data = ModalRoute.of(context)?.settings.arguments as List<dynamic>;
+    final user = route_data[0] as Personnel;
+    final mysqlconn = route_data[1] as MySqlConnection;
+   
         return Scaffold(
           
           appBar: AppBar(
              actions: [
-              IconButton(onPressed: (){}, icon: Icon(Icons.person_add)),
+              IconButton(onPressed: (){
+                if(user.grade == 'president') {
+                  Navigator.of(context).pushNamed(AjouPersView,arguments:mysqlconn);
+                }
+              }, icon: Icon(Icons.person_add)),
               SizedBox(width: 10,),
               IconButton(onPressed: (){},icon: Icon(Icons.person_remove_alt_1)),
               SizedBox(width: 10,),
@@ -33,7 +38,7 @@ class _MyHomePageState extends State<MyHomePage> {
              ],
             title: Row(
               children: [
-                SizedBox(width: 690,),
+                SizedBox(width: 640,),
                 Text('Bibliothèque'),
               ],
             ),
@@ -62,7 +67,7 @@ class _MyHomePageState extends State<MyHomePage> {
                            ),
                         ),
                        onTap: (){
-                        Navigator.of(context).pushNamed(LecteurPage,arguments: snapshot.data);
+                        Navigator.of(context).pushNamed(LecteurPage,arguments:mysqlconn);
                        },
                                  
                         ),
@@ -77,10 +82,12 @@ class _MyHomePageState extends State<MyHomePage> {
                              children: const [
                               SizedBox(height: 50,),
                               Icon(Icons.book,size: 50,),
-                               Text("Ouvrage",style: TextStyle(fontStyle: FontStyle.italic,color: Colors.black,fontSize: 20),),
+                               Text("Ouvrages",style: TextStyle(fontStyle: FontStyle.italic,color: Colors.black,fontSize: 20),),
                              ],
                            ),
-                           onTap: (){},
+                           onTap: (){
+                            Navigator.of(context).pushNamed(OuvragePage,arguments:mysqlconn);
+                           },
                          ),
                         ),),
                         SizedBox(width: 50,),
@@ -117,7 +124,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                                      ],
                                                    ),
                                                    onTap: (){
-                                                     Navigator.of(context).pushNamed(AjouLecView,arguments: snapshot.data);
+                                                     Navigator.of(context).pushNamed(AjouLecView,arguments:mysqlconn);
                                                    },
                                   ),
                         ),),
@@ -133,6 +140,9 @@ class _MyHomePageState extends State<MyHomePage> {
                                Text("Ajouter Ouvrage",style: TextStyle(fontStyle: FontStyle.italic,color: Colors.black,fontSize: 20),),
                              ],
                            ),
+                           onTap: (){
+                            Navigator.of(context).pushNamed(AjouOuvView,arguments:mysqlconn);
+                           },
                       ),
                         ),),
                         SizedBox(width: 50,),
@@ -201,6 +211,6 @@ class _MyHomePageState extends State<MyHomePage> {
           
         );
       }
-    );
-  }
+  
+  
 }

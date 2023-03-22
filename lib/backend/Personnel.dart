@@ -1,8 +1,11 @@
 class Personnel {
- final int id ;
- final String nom , prenom , email,grade;
- final int ? age;
+ final String nom , prenom , email,grade,mot_de_passe,adresse;
+   final int cin ;
+ final int ? age , heures_activite , prets_effectues;
+  final DateTime date_entree ;
+  DateTime ?derniere_activite ;
+  
 
-  Personnel(this.id, this.nom, this.prenom, this.email, this.grade, this.age);
+  Personnel( this.nom, this.prenom, this.email, this.grade, this.age, this.heures_activite, this.date_entree, this.prets_effectues, this.mot_de_passe, this.adresse,this.cin);
  
 }

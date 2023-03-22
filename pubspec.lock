@@ -41,8 +41,16 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.17.0"
+  crypt:
+    dependency: "direct main"
+    description:
+      name: crypt
+      sha256: c12682393cc6aae221e278692d8a433e188db2064b7de5daa253fd62ccfa096f
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.2.1"
   crypto:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: crypto
       sha256: aa274aa7774f8964e4f4f38cc994db7b6158dd36e9187aaceaddc994b35c6c67
@@ -99,6 +107,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  hash:
+    dependency: "direct main"
+    description:
+      name: hash
+      sha256: f3af74537f74a050075baa027596bd6925d75573ce6c8073fa67e3920c1f0f68
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.4"
   js:
     dependency: transitive
     description:

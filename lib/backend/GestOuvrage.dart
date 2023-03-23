@@ -32,9 +32,18 @@ class GestOuvrages {
   Future<Ouvrage?>  add_Ouvrage({required MySqlConnection mySqlConnection ,
   required String nomOuv , required String nomauteur , required double prix , required int nb , String? categorie})async{
      try {
-        final Results results = await mySqlConnection.query("insert into ouvrage(nomouvrage,nomauteur,nb,nb_dispo,nb_perdu,nb_pretes,categorie,date_entree,prix) values(?,?,?,?,?,?,?,?,?)",[
+      Results results ;
+          results = await mySqlConnection.query("select idouvrage from personnel where nomOuv = ? , nomauteur = ?",[
+            nomOuv,nomauteur
+          ]);
+          if(results.isEmpty){
+          results = await mySqlConnection.query("insert into ouvrage(nomouvrage,nomauteur,nb,nb_dispo,nb_perdu,nb_pretes,categorie,date_entree,prix) values(?,?,?,?,?,?,?,?,?)",[
           nomOuv,nomauteur,nb,nb,0,0,categorie,DateTime.now().toUtc(),prix
-        ]);
+        ]);}
+        else{
+          print("Ouvrage deja existe");
+        }
+
         
         return Ouvrage(nomOuv, nomauteur, categorie ?? "", nb, nb, 0, 0, prix, DateTime.now());
      } catch (e) {

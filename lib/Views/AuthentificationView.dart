@@ -48,7 +48,7 @@ class _AuthentificationViewState extends State<AuthentificationView> {
           body: Center(
             child: Column(
               children: [
-                  SizedBox(height: 15),
+                  SizedBox(height: 200),
                 Container(
                   width: 400,
                   child: TextField(

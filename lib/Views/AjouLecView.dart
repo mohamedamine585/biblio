@@ -47,7 +47,7 @@ class _AjouterLecteurState extends State<AjouterLecteur> {
       body: Center(
         child: Column(
           children: [
-              SizedBox(height: 15),
+              SizedBox(height: 150),
             Container(
               width: 400,
               child: TextField(
@@ -144,13 +144,13 @@ class _AjouterLecteurState extends State<AjouterLecteur> {
               ),
                 SizedBox(height: 20),
               TextButton(onPressed: ()async{
-                int abonnement = 3;
+                int abonnement = 1;
                   if(ischecked1)
-                     abonnement = 3;
+                     abonnement = 1;
                   if(ischecked2)
-                     abonnement = 5 ;
+                     abonnement = 2 ;
                   if(ischecked3)
-                     abonnement = 9;
+                     abonnement = 3;
                    
                 final lecteur = await GestionLecteurs().add_lecteur(mySqlConnection: mySqlConnection, nom: nom.text, prenom: prenom.text, email: email.text, cin:int.parse(cin.text), addresse: adresse.text,abonnement: abonnement );
                 print(lecteur);

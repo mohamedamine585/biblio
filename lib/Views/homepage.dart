@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Consts.dart';
+import 'package:flutter_application_1/backend/GestPersonnel.dart';
 import 'package:flutter_application_1/backend/MysqlDBConnection.dart';
 import 'package:flutter_application_1/backend/Personnel.dart';
 import 'package:mysql1/mysql1.dart';
@@ -14,7 +15,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override 
   final mysqlconn = MysqlConn();
-
+  final GestP = GestPersonnel();
   @override
   Widget build(BuildContext context) {
     final route_data = ModalRoute.of(context)?.settings.arguments as List<dynamic>;
@@ -33,12 +34,15 @@ class _MyHomePageState extends State<MyHomePage> {
               SizedBox(width: 10,),
               IconButton(onPressed: (){},icon: Icon(Icons.person_remove_alt_1)),
               SizedBox(width: 10,),
-              IconButton(onPressed: (){},icon:  Icon(Icons.logout),),
+              IconButton(onPressed: ()async{
+                   await GestP.logout(mysqlconn, user);
+                   Navigator.of(context).pushNamedAndRemoveUntil(AuthenView, (route) => false);
+              },icon:  Icon(Icons.logout),),
               
              ],
             title: Row(
               children: [
-                SizedBox(width: 640,),
+                SizedBox(width:  20,),
                 Text('Bibliothèque'),
               ],
             ),

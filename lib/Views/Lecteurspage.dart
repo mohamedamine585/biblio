@@ -98,6 +98,8 @@ class _LecteurpageState extends State<Lecteurpage> {
                                         width: 400,
                                         child: Text("${lecs.elementAt(index).nom} ${lecs.elementAt(index).prenom}")),
                                     ),
+                                    Text("CIN : ${lecs.elementAt(index).Cin}    "),
+                                    
                                     Text("Date d'entrée : ${lecs.elementAt(index).date_entree.day}-${lecs.elementAt(index).date_entree.month}-${lecs.elementAt(index).date_entree.year}    ${lecs.elementAt(index).nb_prets } prets "),
                                     Text("    Abonnement : A${lecs.elementAt(index).abonnement}  ${lecs.elementAt(index).date_abonnement.day}-${lecs.elementAt(index).date_abonnement.month}-${lecs.elementAt(index).date_abonnement.year} : ${lecs.elementAt(index).date_abonnement.hour}:${lecs.elementAt(index).date_abonnement.minute}",style: TextStyle(color: Colors.blue),),
                                   

@@ -5,3 +5,5 @@ const OuvragePage = 'Ouvragepage';
 const AjouPersView = 'AjouPersView';
 const Homepage = 'Homepage';
 const AuthenView = 'Authenview';
+const AjouPretView = "AjouPretView";
+const PretPage = "PretPage";

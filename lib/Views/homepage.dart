@@ -107,6 +107,9 @@ class _MyHomePageState extends State<MyHomePage> {
                                Text("Prêts",style: TextStyle(fontStyle: FontStyle.italic,color: Colors.black,fontSize: 20),),
                              ],
                            ),
+                           onTap: (){
+                            Navigator.pushNamed(context, PretPage,arguments: mysqlconn);
+                           },
                       ),
                         ),),
                      ],),
@@ -160,6 +163,9 @@ class _MyHomePageState extends State<MyHomePage> {
                                Text("Ajouter prêt",style: TextStyle(fontStyle: FontStyle.italic,color: Colors.black,fontSize: 20),),
                              ],
                            ),
+                           onTap: (){
+                            Navigator.of(context).pushNamed(AjouPretView,arguments: [mysqlconn,user]);
+                           },
                       ),
                         ),),
                      ],),

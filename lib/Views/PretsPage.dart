@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/backend/GestLecteur.dart';
 import 'package:flutter_application_1/backend/GestPret.dart';
-import 'package:flutter_application_1/backend/Lecteur.dart';
 import 'package:flutter_application_1/backend/Pret.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:mysql1/mysql1.dart';
 
 
@@ -18,7 +15,8 @@ class PretsPage extends StatefulWidget {
 
 class _PretsPageState extends State<PretsPage> {
   List<Pret?> Prets = [];
-  List<Pret> P = [];
+  List<Pret> P = [],Ptemp = [];
+  bool actuelfiltre = false ;
   @override
   late final TextEditingController query ;
   @override
@@ -41,37 +39,72 @@ class _PretsPageState extends State<PretsPage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Container(
-              height: 100,
-              width: 500,
-            child: TextField(
+             Row(
               
-              onChanged: (value) {
-                setState(() {
-                  P.clear();
-                  Prets.forEach((element) { 
-                    if(element!.nompersonnel.contains(value)  || (element.prenompersonnel.contains(value)) 
-                  || element.nomouvrage.contains(value)  || (element.auteur.contains(value) || (element.nomlecteur.contains(value)) ||(element.prenomlecteur.contains(value)) ))
-                   P.add(element);
-                  
-                  }); 
-                });
-              },
-              controller: query,
-               cursorColor: Colors.grey,
-                        decoration: InputDecoration(
-                          fillColor: Colors.white,
-                          filled: true,
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide.none
-                          ),
-                          hintText: 'Search',
-                          hintStyle: TextStyle(
-                            color: Colors.grey,
-                            fontSize: 18
-                          ),),
-            ),),
+              children: [
+              const  SizedBox(width: 500,),
+                Container(
+                  width: 500,
+                  child: TextField(
+                    
+                    onChanged: (value) {
+                      setState(() {
+                        P.clear();
+                        Prets.forEach((element) { 
+                          if((element!.nompersonnel.contains(value)  || (element.prenompersonnel.contains(value)) 
+                        || element.nomouvrage.contains(value)  || (element.auteur.contains(value) || (element.nomlecteur.contains(value)) ||(element.prenomlecteur.contains(value)) )) )
+                         {
+                          Ptemp = P ;
+                          if(actuelfiltre && element.termine == 0){
+                            P.add(element);
+                          }
+                         else if(!actuelfiltre){P.add(element);
+                          Ptemp = P ; 
+                         }
+                        
+                         }
+                        
+                        }); 
+                        
+                      });
+                    },
+                    controller: query,
+                     cursorColor: Colors.grey,
+                              decoration: InputDecoration(
+                                fillColor: Colors.white,
+                                filled: true,
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  borderSide: BorderSide.none
+                                ),
+                                hintText: 'Search',
+                                hintStyle: TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 18
+                                ),),
+                  ),
+                ),
+                const SizedBox(width: 20,),
+                Text("Prets actuels :"),
+                const SizedBox(width: 10,),
+
+                 Checkbox(value: actuelfiltre, onChanged:(act){
+                setState(() 
+                   {  actuelfiltre = act!;
+                    if(actuelfiltre){
+                     P = Ptemp;
+                      P =  P.where((element) => element.termine == 0).toList();
+                      
+                    }else{
+                      print(Ptemp.length);
+                      P = Ptemp ;
+                    }}
+                ); 
+                })
+              ],
+            
+            
+            ),
             Container(
               height: 630,
               child: FutureBuilder(
@@ -107,8 +140,27 @@ class _PretsPageState extends State<PretsPage> {
                                     Text("Date de pret : ${P.elementAt(index).debut_pret.day}-${P.elementAt(index).debut_pret.month}-${P.elementAt(index).debut_pret.year}    "),
                                     Text(" Personnel : ${P.elementAt(index).nompersonnel}  ${P.elementAt(index).prenompersonnel}"),
                                   
+                                  
                                     Text("  Reste : ${temps_pret_restant}" ,style: TextStyle(color: temps_pret_restant > 0 ? Colors.black : Colors.red),),
-                                    SizedBox(width: 50,),
+                                    const    SizedBox(width: 20,),
+
+                                    P.elementAt(index).termine ==0  ? IconButton(onPressed: ()async{
+                                         await GestPret().delete_prets(mySqlConnection: mysqlconn, nomouvrage: snapshot.data?.elementAt(index)?.nomouvrage ?? ""
+                                         , nomauteur: snapshot.data?.elementAt(index)?.auteur ?? ""
+                                         , nomlecteur: snapshot.data?.elementAt(index)?.nomlecteur ?? ""
+                                         , prenomlecteur: snapshot.data?.elementAt(index)?.prenomlecteur ?? ""
+                                         , idpret: snapshot.data?.elementAt(index)?.idpret ?? -1);
+                                                                                    
+                                             if(actuelfiltre){
+                                              setState(() {    
+                                              P = P.where((element) => element.idpret  != snapshot.data?.elementAt(index)?.idpret).toList();
+                                           });
+                                             }
+
+                                      
+                                           
+                                    }, icon:const Icon(Icons.remove),):SizedBox(),
+                                    const SizedBox(width: 50,),
                                    
                                   ],
                                 ),
@@ -128,3 +180,4 @@ class _PretsPageState extends State<PretsPage> {
       
     
   }
+

@@ -8,7 +8,6 @@ import 'package:mysql1/mysql1.dart';
 
 class PretsPage extends StatefulWidget {
   const PretsPage({super.key});
-
   @override
   State<PretsPage> createState() => _PretsPageState();
 }
@@ -116,7 +115,7 @@ class _PretsPageState extends State<PretsPage> {
                       itemCount: P.length,
                       itemBuilder: (context,index){
                       final temps_pret_restant = DateTimeRange(start: DateTime.now().toUtc(), end: P.elementAt(index).fin_pret).duration.inDays ;
-                      
+                      bool able_to_remove = snapshot.data?.elementAt(index)?.termine == 0;
                       return ListTile(
                       
                         title:
@@ -144,18 +143,16 @@ class _PretsPageState extends State<PretsPage> {
                                     Text("  Reste : ${temps_pret_restant}" ,style: TextStyle(color: temps_pret_restant > 0 ? Colors.black : Colors.red),),
                                     const    SizedBox(width: 20,),
 
-                                    P.elementAt(index).termine ==0  ? IconButton(onPressed: ()async{
-                                         await GestPret().delete_prets(mySqlConnection: mysqlconn, nomouvrage: snapshot.data?.elementAt(index)?.nomouvrage ?? ""
-                                         , nomauteur: snapshot.data?.elementAt(index)?.auteur ?? ""
-                                         , nomlecteur: snapshot.data?.elementAt(index)?.nomlecteur ?? ""
-                                         , prenomlecteur: snapshot.data?.elementAt(index)?.prenomlecteur ?? ""
-                                         , idpret: snapshot.data?.elementAt(index)?.idpret ?? -1);
-                                                                                    
-                                             if(actuelfiltre){
-                                              setState(() {    
-                                              P = P.where((element) => element.idpret  != snapshot.data?.elementAt(index)?.idpret).toList();
+                                    able_to_remove ? IconButton(onPressed: ()async{
+                                         await GestPret().delete_prets(mySqlConnection: mysqlconn, nomouvrage: P.elementAt(index).nomouvrage 
+                                         , nomauteur: P.elementAt(index).auteur
+                                         , nomlecteur: P.elementAt(index).nomlecteur 
+                                         , prenomlecteur: P.elementAt(index).prenomlecteur
+                                         , idpret: P.elementAt(index).idpret ?? -1);
+                                                                                  
+                                              setState(() { 
+                                             build(context);
                                            });
-                                             }
 
                                       
                                            

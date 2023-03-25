@@ -30,10 +30,10 @@ class GestPret {
          Results valider_pret = await mySqlConnection.query("insert into pret(nomlecteur,prenomlecteur,nomouvrage,auteur,nompersonnel,prenompersonnel,debut_pret,fin_pret,termine) values(?,?,?,?,?,?,?,?,?)",[
           nomlecteur,prenomlecteur,nomouvrage,auteur,nompersonnel,prenompersonnel,date_deb,date_fin,false
          ]);
-         valider_pret = await mySqlConnection.query("update lecteur set nb_prets = nb_prets +1 and nb_prets_actuels = nb_prets_actuels +1  where nomlecteur = ? and prenomlecteur = ? ",[
+         valider_pret = await mySqlConnection.query("update lecteur set nb_prets = nb_prets +1 , nb_prets_actuels = nb_prets_actuels +1  where nomlecteur = ? and prenomlecteur = ? ",[
           nomlecteur,prenomlecteur
          ]);
-         valider_pret = await mySqlConnection.query("update ouvrage set nb_pretes = nb_pretes +1 and nb_dispo = nb_dispo - 1 where nomouvrage = ? and nomauteur = ?",[
+         valider_pret = await mySqlConnection.query("update ouvrage set  nb_dispo = nb_dispo - 1 where nomouvrage = ? and nomauteur = ?",[
           nomouvrage,auteur
          ]);
          valider_pret = await mySqlConnection.query("update personnel set pret_effectues = pret_effectues + 1 where nompersonnel = ? and prenompersonnel = ?",[
@@ -60,13 +60,17 @@ class GestPret {
    required int idpret,
    })async{
     try {
+
      await mySqlConnection.query("update lecteur set nb_prets_actuels = nb_prets_actuels - 1 where nomlecteur = ? and prenomlecteur = ?",[
         nomlecteur,prenomlecteur
       ]);
-       mySqlConnection.query("update ouvrage set nb_dispo = nb_dispo + 1 and  nb_pretes = nb_pretes - 1 where nomouvrage = ? and nomauteur = ?",[
+      await mySqlConnection.query("update lecteur set fidelite = fidelite + (select count(idpret) from pret where nomlecteur = ? and prenomlecteur = ? and termine = 1) / 5 where fidelite < 5 and nomlecteur = ? and prenomlecteur = ? ",[
+        nomlecteur,prenomlecteur
+      ]);
+     await  mySqlConnection.query("update ouvrage set nb_dispo = nb_dispo + 1  where nomouvrage = ? and nomauteur = ?",[
         nomouvrage,nomauteur
       ]);
-     mySqlConnection.query("update pret set termine = 1 where idpret = ?",[idpret]);
+     await mySqlConnection.query("update pret set termine = 1 where idpret = ?",[idpret]);
     } catch (e) {
       print(e);
     }

@@ -16,9 +16,8 @@ class GestOuvrages {
              , results.elementAt(index)["nb"]
              , results.elementAt(index)["nb_dispo"]
              , results.elementAt(index)["nb_perdu"]
-             ,results.elementAt(index)["nb_pretes"]
              , results.elementAt(index)["prix"]
-          
+                
              , results.elementAt(index)["date_entree"]);
           });
 
@@ -33,19 +32,19 @@ class GestOuvrages {
   required String nomOuv , required String nomauteur , required double prix , required int nb , String? categorie})async{
      try {
       Results results ;
-          results = await mySqlConnection.query("select idouvrage from personnel where nomOuv = ? , nomauteur = ?",[
+          results = await mySqlConnection.query("select idouvrage from ouvrage where nomouvrage = ? and nomauteur = ?",[
             nomOuv,nomauteur
           ]);
           if(results.isEmpty){
-          results = await mySqlConnection.query("insert into ouvrage(nomouvrage,nomauteur,nb,nb_dispo,nb_perdu,nb_pretes,categorie,date_entree,prix) values(?,?,?,?,?,?,?,?,?)",[
-          nomOuv,nomauteur,nb,nb,0,0,categorie,DateTime.now().toUtc(),prix
+          results = await mySqlConnection.query("insert into ouvrage(nomouvrage,nomauteur,nb,nb_dispo,nb_perdu,categorie,date_entree,prix) values(?,?,?,?,?,?,?,?,?)",[
+          nomOuv,nomauteur,nb,nb,0,categorie,DateTime.now().toUtc(),prix
         ]);}
         else{
           print("Ouvrage deja existe");
         }
 
         
-        return Ouvrage(nomOuv, nomauteur, categorie ?? "", nb, nb, 0, 0, prix, DateTime.now());
+        return Ouvrage(nomOuv, nomauteur, categorie ?? "", nb, nb, 0, prix, DateTime.now());
      } catch (e) {
       print(e);
        return null;

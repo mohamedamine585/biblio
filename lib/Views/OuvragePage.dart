@@ -57,7 +57,7 @@ class _OuvragepageState extends State<Ouvragepage> {
                          Ouvs.clear();
                      Ouvrages?.forEach((element) {
                       if((element.nomAuteur.contains(value) || element.nomOuvrage.contains(value))
-                      && ((dispofiltre && element.nb_dispo >0 ) || (pretesfiltre && element.nb_pretes > 0) || (!pretesfiltre && !dispofiltre)) )
+                      && ((dispofiltre && element.nb_dispo >0 ) || (pretesfiltre &&( element.nb - element.nb_dispo) > 0) || (!pretesfiltre && !dispofiltre)) )
                        {
                         
                         Ouvs.add(element);
@@ -110,7 +110,7 @@ class _OuvragepageState extends State<Ouvragepage> {
                 if(pretesfiltre){
                   Ouvs =temp;
                   temp = Ouvs;
-                  Ouvs = Ouvs.where((element) => element.nb_pretes>0).toList();
+                  Ouvs = Ouvs.where((element) => (element.nb - element.nb_dispo)>0).toList();
                
                 }else{
                   Ouvs = temp;
@@ -134,8 +134,7 @@ class _OuvragepageState extends State<Ouvragepage> {
                   return ListView.builder(
                       itemCount: Ouvs.length,
                       itemBuilder: (context,index){
-                if(snapshot.data?.elementAt(index) !=  null)   { 
-                 {    
+               {    
                       return ListTile(
                       
                         title:
@@ -184,7 +183,7 @@ class _OuvragepageState extends State<Ouvragepage> {
                           ),
                         
                         
-                      );}}
+                      );}
                     });
                 }
               )),]),

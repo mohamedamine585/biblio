@@ -8,7 +8,7 @@ class GestOuvrages {
   Future<List<Ouvrage>?> get_Ouvrages({required MySqlConnection mySqlConnection})async{
      try {
     
-               final Results results = await mySqlConnection.query("select * from ouvrage");
+               final Results results = await mySqlConnection.query("select * from ouvrage order by date_entree desc");
           List<Ouvrage> list = List.generate(results.length, (index) {
              return Ouvrage(results.elementAt(index)["nomouvrage"]
              , results.elementAt(index)["nomauteur"]

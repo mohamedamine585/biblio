@@ -38,6 +38,8 @@ class _PretsPageState extends State<PretsPage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
+            const  SizedBox(height: 30,),
+
              Row(
               
               children: [
@@ -104,6 +106,7 @@ class _PretsPageState extends State<PretsPage> {
             
             
             ),
+                        const  SizedBox(height: 30,),
             Container(
               height: 630,
               child: FutureBuilder(
@@ -136,14 +139,16 @@ class _PretsPageState extends State<PretsPage> {
                                     ),
                                     Text("Lecteur : ${P.elementAt(index).nomlecteur}  ${P.elementAt(index).prenomlecteur}    "),
                                     
-                                    Text("Date de pret : ${P.elementAt(index).debut_pret.day}-${P.elementAt(index).debut_pret.month}-${P.elementAt(index).debut_pret.year}    "),
-                                    Text(" Personnel : ${P.elementAt(index).nompersonnel}  ${P.elementAt(index).prenompersonnel}"),
+                                    Text(" Personnel : ${P.elementAt(index).nompersonnel}  ${P.elementAt(index).prenompersonnel}   "),
                                   
-                                  
-                                    Text("  Reste : ${temps_pret_restant}" ,style: TextStyle(color: temps_pret_restant > 0 ? Colors.black : Colors.red),),
+                                                                      Text("Debut de pret : ${P.elementAt(index).debut_pret.day}-${P.elementAt(index).debut_pret.month}-${P.elementAt(index).debut_pret.year}    "),
+
+                                    able_to_remove ?   Text("  Reste : ${temps_pret_restant}" ,style: TextStyle(color: temps_pret_restant > 0 ? Colors.black : Colors.red),):                                  
+                                   Text("Fin de pret : ${P.elementAt(index).fin_pret.day}-${P.elementAt(index).fin_pret.month}-${P.elementAt(index).fin_pret.year}    "),
+
                                     const    SizedBox(width: 20,),
 
-                                    able_to_remove ? IconButton(onPressed: ()async{
+                                    able_to_remove ? TextButton(onPressed: ()async{
                                          await GestPret().delete_prets(mySqlConnection: mysqlconn, nomouvrage: P.elementAt(index).nomouvrage 
                                          , nomauteur: P.elementAt(index).auteur
                                          , nomlecteur: P.elementAt(index).nomlecteur 
@@ -156,7 +161,9 @@ class _PretsPageState extends State<PretsPage> {
 
                                       
                                            
-                                    }, icon:const Icon(Icons.remove),):SizedBox(),
+                                    },
+                               
+                                     child:const Text("Terminer pret")):const Text("Pret terminé",style: TextStyle(color: Colors.grey),),
                                     const SizedBox(width: 50,),
                                    
                                   ],

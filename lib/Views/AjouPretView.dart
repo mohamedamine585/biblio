@@ -48,7 +48,7 @@ class _AjouterPretState extends State<AjouterPret> {
      Personnel personnel = list[1];
     return  Scaffold(
       appBar: AppBar(
-        title:const Center(child: const Text("Ajouter un Ouvrage")),
+        title:const Center(child: const Text("Ajouter un Pret")),
       ),
       body: Center(
         child: Column(

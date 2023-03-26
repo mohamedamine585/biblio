@@ -64,7 +64,7 @@ class GestPret {
      await mySqlConnection.query("update lecteur set nb_prets_actuels = nb_prets_actuels - 1 where nomlecteur = ? and prenomlecteur = ?",[
         nomlecteur,prenomlecteur
       ]);
-      await mySqlConnection.query("update lecteur set fidelite = fidelite + (select count(idpret) from pret where nomlecteur = ? and prenomlecteur = ? and termine = 1) / 5 where fidelite < 5 and nomlecteur = ? and prenomlecteur = ? ",[
+      await mySqlConnection.query("update lecteur set fidelite = fidelite + 1 where fidelite < 5 and nomlecteur = ? and prenomlecteur = ? ",[
         nomlecteur,prenomlecteur
       ]);
      await  mySqlConnection.query("update ouvrage set nb_dispo = nb_dispo + 1  where nomouvrage = ? and nomauteur = ?",[
@@ -77,7 +77,7 @@ class GestPret {
   }
   Future<List<Pret?>> get_prets({required MySqlConnection mySqlConnection})async{
      try {
-       Results results =await mySqlConnection.query("select * from pret");
+       Results results =await mySqlConnection.query("select * from pret order by debut_pret desc");
        if(results.isNotEmpty){
         return List.generate(results.length, (index){
           return Pret(

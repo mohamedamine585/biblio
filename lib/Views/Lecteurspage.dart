@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/backend/GestLecteur.dart';
 import 'package:flutter_application_1/backend/Lecteur.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:mysql1/mysql1.dart';
@@ -71,7 +70,7 @@ class _LecteurpageState extends State<Lecteurpage> {
             Container(
               height: 630,
               child: FutureBuilder(
-                future: GestionLecteurs().get_lecteurs(mySqlConnection: mysqlconn),
+                future: Lecteur().get_lecteurs(mySqlConnection: mysqlconn),
                 builder: (context, snapshot) {
                    Lecteurs = snapshot.data  ;
 

@@ -1,7 +1,9 @@
 
 
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/backend/GestOuvrage.dart';
+import 'package:flutter_application_1/backend/Ouvrage.dart';
 import 'package:mysql1/mysql1.dart';
 
 class AjouterOuvrage extends StatefulWidget {
@@ -106,9 +108,13 @@ class _AjouterOuvrageState extends State<AjouterOuvrage> {
               ),
              
                 SizedBox(height: 40),
-              TextButton(onPressed: ()async{              
-                await GestOuvrages().add_Ouvrage(mySqlConnection: mySqlConnection, nomOuv: nom.text, nomauteur: auteur.text, prix: double.parse(prix.text), nb: int.parse(nb.text),categorie: categorie.text);
-                Navigator.of(context).pop();
+              TextButton(onPressed: ()async{    
+                Ouvrage ouvrage =Ouvrage.define(nom.text, auteur.text, categorie.text , int.parse(nb.text), int.parse(nb.text), 0,double.parse(prix.text), DateTime.now().toUtc())        ;
+                
+               final added = await ouvrage.add_Ouvrage(mySqlConnection: mySqlConnection);
+               if(added) {
+                 Navigator.of(context).pop();
+               }
               }, child: const Text("Ajouter ouvrage"))
       
           ],

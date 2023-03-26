@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/backend/GestPret.dart';
 import 'package:flutter_application_1/backend/Pret.dart';
 import 'package:mysql1/mysql1.dart';
 
@@ -110,7 +109,7 @@ class _PretsPageState extends State<PretsPage> {
             Container(
               height: 630,
               child: FutureBuilder(
-                future: GestPret().get_prets(mySqlConnection: mysqlconn),
+                future: Pret().get_prets(mySqlConnection: mysqlconn),
                 builder: (context, snapshot) {
                    Prets = snapshot.data ?? []  ;
 
@@ -149,11 +148,8 @@ class _PretsPageState extends State<PretsPage> {
                                     const    SizedBox(width: 20,),
 
                                     able_to_remove ? TextButton(onPressed: ()async{
-                                         await GestPret().delete_prets(mySqlConnection: mysqlconn, nomouvrage: P.elementAt(index).nomouvrage 
-                                         , nomauteur: P.elementAt(index).auteur
-                                         , nomlecteur: P.elementAt(index).nomlecteur 
-                                         , prenomlecteur: P.elementAt(index).prenomlecteur
-                                         , idpret: P.elementAt(index).idpret ?? -1);
+
+                                         await P.elementAt(index).delete_prets(mySqlConnection: mysqlconn);
                                                                                   
                                               setState(() { 
                                              build(context);

@@ -1,6 +1,6 @@
 
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/backend/GestLecteur.dart';
+import 'package:flutter_application_1/backend/Lecteur.dart';
 import 'package:mysql1/mysql1.dart';
 
 class AjouterLecteur extends StatefulWidget {
@@ -11,6 +11,7 @@ class AjouterLecteur extends StatefulWidget {
 }
 
 class _AjouterLecteurState extends State<AjouterLecteur> {
+  
   @override
   late final TextEditingController nom ; 
    late final TextEditingController prenom ;
@@ -152,9 +153,12 @@ class _AjouterLecteurState extends State<AjouterLecteur> {
                   if(ischecked3)
                      abonnement = 3;
                    
-                final lecteur = await GestionLecteurs().add_lecteur(mySqlConnection: mySqlConnection, nom: nom.text, prenom: prenom.text, email: email.text, cin:int.parse(cin.text), addresse: adresse.text,abonnement: abonnement );
-                print(lecteur);
-                Navigator.of(context).pop();
+               
+                final lecteur =Lecteur.define( nom.text, prenom.text, email.text,int.parse(cin.text), adresse.text, DateTime.now(),DateTime.now(), 0,0,0,0,abonnement*3,abonnement,1);
+                bool added= await lecteur.add_lecteur(mySqlConnection: mySqlConnection);
+                if(added) {
+                  Navigator.of(context).pop();
+                }
               }, child: const Text("Ajouter lecteur"))
       
           ],

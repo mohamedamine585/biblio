@@ -1,5 +1,6 @@
+import 'package:crypt/crypt.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/backend/GestPersonnel.dart';
+import 'package:flutter_application_1/backend/Personnel.dart';
 import 'package:mysql1/mysql1.dart';
 
 class AjouterPersonnel extends StatefulWidget {
@@ -196,8 +197,11 @@ class _AjouterPersonnelState extends State<AjouterPersonnel> {
                   if(ischecked3)
                      grade = "officier";
                 if(mot_de_passe.text == Cmotdepasse.text) {
-                  final Personnel = await GestPersonnel().ajouter_personnel(mySqlConnection: mySqlConnection,grade: grade, mot_de_passe:mot_de_passe.text , nom: nom.text, prenom: prenom.text, email: email.text, cin:int.parse(cin.text), addresse: adresse.text, age: int.parse(cin.text));
-                  if(Personnel != null){
+                
+                 Personnel personnel =  Personnel.define( nom.text, prenom.text, email.text, grade, int.parse(age.text),DateTime.now() , 0,Crypt.sha256(mot_de_passe.text).hash,adresse.text,int.parse(cin.text),0);
+                  bool added =await personnel.ajouter_personnel(mySqlConnection: mySqlConnection);
+                  if(added){
+
                     Navigator.of(context).pop();
                   }
                 }

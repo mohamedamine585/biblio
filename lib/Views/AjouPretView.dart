@@ -1,10 +1,11 @@
 
 
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/backend/GestOuvrage.dart';
-import 'package:flutter_application_1/backend/GestPret.dart';
+
 import 'package:flutter_application_1/backend/Personnel.dart';
 import 'package:mysql1/mysql1.dart';
+
+import '../backend/Pret.dart';
 
 class AjouterPret extends StatefulWidget {
   const AjouterPret({super.key});
@@ -14,7 +15,7 @@ class AjouterPret extends StatefulWidget {
 }
 
 class _AjouterPretState extends State<AjouterPret> {
-  GestPret gestPret = GestPret();
+
   @override
   late final TextEditingController nomouvrage ; 
    late final TextEditingController nomauteur ;
@@ -117,8 +118,10 @@ class _AjouterPretState extends State<AjouterPret> {
              
                 SizedBox(height: 40),
               TextButton(onPressed: ()async{   
-               final pret =await gestPret.ajouter_pret(mySqlConnection: mySqlConnection, nomlecteur: nomlecteur.text, prenomlecteur: prenomlecteur.text, nomouvrage: nomouvrage.text, auteur: nomauteur.text, nompersonnel: personnel.nom , prenompersonnel: personnel.prenom, days: int.parse(days.text));     
-                if(pret != null) {
+                DateTime date_deb = DateTime.now().toUtc() , date_fin = DateTime.now().add(Duration(days: int.parse(days.text))).toUtc();
+                Pret? pret = Pret.define(null, nomlecteur.text,  prenomlecteur.text, nomouvrage.text,  nomauteur.text,date_deb,date_fin,personnel.nom,personnel.prenom,0);
+                bool added =   await pret.ajouter_pret(mySqlConnection: mySqlConnection);     
+                if(added) {
                   Navigator.of(context).pop();
                 }
               }, child: const Text("Ajouter Pret"))

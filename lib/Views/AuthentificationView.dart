@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Consts.dart';
-import 'package:flutter_application_1/backend/GestLecteur.dart';
-import 'package:flutter_application_1/backend/GestPersonnel.dart';
+
 import 'package:flutter_application_1/backend/MysqlDBConnection.dart';
+import 'package:flutter_application_1/backend/Personnel.dart';
 import 'package:mysql1/mysql1.dart';
 
 class AuthentificationView extends StatefulWidget {
@@ -84,7 +84,8 @@ class _AuthentificationViewState extends State<AuthentificationView> {
                  ),
               const  SizedBox(height: 30,),
               TextButton(onPressed: ()async{
-                  final user = await GestPersonnel().Authentifier(mySqlConnection: snapshot.data!, nom: nom.text, prenom: prenom.text, mot_de_passe: mot_de_passe.text);
+                  
+                  final user = await Personnel().Authentifier(mySqlConnection: snapshot.data!,nom: nom.text,prenom: prenom.text,mot_de_passe: mot_de_passe.text);
                   if(user != null){
                     Navigator.of(context).pushNamedAndRemoveUntil(Homepage, (route) => false,arguments: [user,snapshot.data]);
                   }

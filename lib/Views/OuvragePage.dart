@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/backend/GestOuvrage.dart';
 import 'package:flutter_application_1/backend/Ouvrage.dart';
 import 'package:mysql1/mysql1.dart';
 
@@ -125,7 +124,7 @@ class _OuvragepageState extends State<Ouvragepage> {
             Container(
               height: 630,
               child: FutureBuilder(
-                future: GestOuvrages().get_Ouvrages(mySqlConnection: mysqlconn),
+                future: Ouvrage().get_Ouvrages(mySqlConnection: mysqlconn),
                 builder: (context, snapshot) {
                    Ouvrages = snapshot.data  ;
                   return ListView.builder(

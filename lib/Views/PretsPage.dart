@@ -151,7 +151,8 @@ class _PretsPageState extends State<PretsPage> {
 
                                          await P.elementAt(index).delete_prets(mySqlConnection: mysqlconn);
                                                                                   
-                                              setState(() { 
+                                              setState(() {  
+                                             P.elementAt(index).termine = 1;
                                              build(context);
                                            });
 

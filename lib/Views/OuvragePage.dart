@@ -58,7 +58,7 @@ class _OuvragepageState extends State<Ouvragepage> {
                         
                         Ouvs.add(element);
                        } });
-                       temp = Ouvs;
+                         
                        });
                      
                       },
@@ -85,11 +85,11 @@ class _OuvragepageState extends State<Ouvragepage> {
                 setState(() {
                       dispofiltre = disp!;
                       if(dispofiltre){
-                        Ouvs = temp;
-                        temp = Ouvs;
+                        temp = Ouvs ;
                   Ouvs = Ouvs.where((element) => element.nb_dispo>0).toList();
                       }
                       else{
+                        
                         Ouvs = temp;
                       }
                       if(pretesfiltre)
@@ -104,11 +104,13 @@ class _OuvragepageState extends State<Ouvragepage> {
                setState(() {
                 pretesfiltre = pret! ;
                 if(pretesfiltre){
-                  Ouvs =temp;
-                  temp = Ouvs;
+                  Ouvs = temp;
+                                    print(temp.length);
+
                   Ouvs = Ouvs.where((element) => (element.nb - element.nb_dispo)>0).toList();
                
                 }else{
+                  print(temp.length);
                   Ouvs = temp;
 
                 } if(dispofiltre){

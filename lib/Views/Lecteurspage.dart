@@ -3,6 +3,8 @@ import 'package:flutter_application_1/backend/Lecteur.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:mysql1/mysql1.dart';
 
+import '../backend/Personnel.dart';
+
 
 class Lecteurpage extends StatefulWidget {
   const Lecteurpage({super.key});
@@ -28,8 +30,9 @@ class _LecteurpageState extends State<Lecteurpage> {
   }
   @override
   Widget build(BuildContext context) {
-    final mysqlconn = ModalRoute.of(context)?.settings.arguments as MySqlConnection ;
-    return  Scaffold(
+  final data =  ModalRoute.of(context)?.settings.arguments as List<dynamic>;
+    final personnel = data[0] as Personnel ;
+    final mysqlconn = data[1]as MySqlConnection ;    return  Scaffold(
       appBar: AppBar(
         title:const Center(child: Text("Lecteurs")),
       ),
@@ -70,7 +73,7 @@ class _LecteurpageState extends State<Lecteurpage> {
             Container(
               height: 630,
               child: FutureBuilder(
-                future: Lecteur().get_lecteurs(mySqlConnection: mysqlconn),
+                future: personnel.get_lecteurs(mySqlConnection: mysqlconn),
                 builder: (context, snapshot) {
                    Lecteurs = snapshot.data  ;
 

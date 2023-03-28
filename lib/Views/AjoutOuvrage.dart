@@ -4,6 +4,7 @@ import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/backend/Ouvrage.dart';
+import 'package:flutter_application_1/backend/Personnel.dart';
 import 'package:mysql1/mysql1.dart';
 
 class AjouterOuvrage extends StatefulWidget {
@@ -40,7 +41,9 @@ class _AjouterOuvrageState extends State<AjouterOuvrage> {
   
   @override
   Widget build(BuildContext context) {
-    final MySqlConnection mySqlConnection = ModalRoute.of(context)?.settings.arguments as MySqlConnection;
+    final data = ModalRoute.of(context)?.settings.arguments as List<dynamic>;
+    final Personnel personnel = data[0];
+    final MySqlConnection mySqlConnection = data[1];
     return  Scaffold(
       appBar: AppBar(
         title:const Center(child: const Text("Ajouter un Ouvrage")),
@@ -107,11 +110,10 @@ class _AjouterOuvrageState extends State<AjouterOuvrage> {
                         ),
               ),
              
-                SizedBox(height: 40),
+               const SizedBox(height: 40),
               TextButton(onPressed: ()async{    
                 Ouvrage ouvrage =Ouvrage.define(nom.text, auteur.text, categorie.text , int.parse(nb.text), int.parse(nb.text), 0,double.parse(prix.text), DateTime.now().toUtc())        ;
-                
-               final added = await ouvrage.add_Ouvrage(mySqlConnection: mySqlConnection);
+              final added = await  personnel.add_Ouvrage(mySqlConnection: mySqlConnection, ouvrage: ouvrage);
                if(added) {
                  Navigator.of(context).pop();
                }

@@ -120,7 +120,7 @@ class _AjouterPretState extends State<AjouterPret> {
               TextButton(onPressed: ()async{   
                 DateTime date_deb = DateTime.now().toUtc() , date_fin = DateTime.now().add(Duration(days: int.parse(days.text))).toUtc();
                 Pret? pret = Pret.define(null, nomlecteur.text,  prenomlecteur.text, nomouvrage.text,  nomauteur.text,date_deb,date_fin,personnel.nom,personnel.prenom,0);
-                bool added =   await pret.ajouter_pret(mySqlConnection: mySqlConnection);     
+                bool added =   await personnel.ajouter_pret(mySqlConnection: mySqlConnection,pret: pret);     
                 if(added) {
                   Navigator.of(context).pop();
                 }

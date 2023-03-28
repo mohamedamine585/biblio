@@ -2,7 +2,11 @@ import 'dart:convert';
 
 import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/backend/Lecteur.dart';
+import 'package:flutter_application_1/backend/Ouvrage.dart';
 import 'package:mysql1/mysql1.dart';
+
+import 'Pret.dart';
 
 class Personnel {
  late String nom , prenom , email,grade,mot_de_passe,addresse;
@@ -37,6 +41,7 @@ class Personnel {
            results1.elementAt(0)["addresse"],
            results1.elementAt(0)["cin"],
            results1.elementAt(0)["minutes_en_service"],);
+           
       }
       final Results results2 = await mySqlConnection.query("update personnel set derniere_activite = ? where cin = ?",[
         DateTime.now().toUtc(),user?.cin
@@ -81,4 +86,195 @@ class Personnel {
      }
      return false;
   }
+   Future<bool> add_lecteur(
+  {required MySqlConnection mySqlConnection , required Lecteur lecteur
+
+  }
+ )async{
+    try {
+      final results = mySqlConnection.query(
+        "insert into lecteur(nomlecteur,prenomlecteur,email,addresse,cin,date_entree,date_abb,nb_prets,nb_prets_actuels,nb_alertes,fidelite,nb_ouv_max,abonnement,nb_abonn) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?)",[
+         lecteur. nom,lecteur. prenom,lecteur. email,lecteur. addresse,lecteur.Cin,DateTime.now().toUtc(),DateTime.now().toUtc(),0,0,0,0,lecteur. abonnement*3,lecteur.abonnement,1
+        ]);
+      return true;
+       
+    } catch (e) {
+      print(e.toString());
+      return false;
+    }
+
+ }
+
+
+
+   Future<List<Lecteur>?> get_lecteurs ({required MySqlConnection mySqlConnection})async{
+      try {
+       
+      Results results =  await  mySqlConnection.query("select * from lecteur");
+      
+    List<Lecteur> list = List<Lecteur>.generate(results.length, (index) {
+        return Lecteur.define(results.elementAt(index)["nomlecteur"]
+        , results.elementAt(index)["prenomlecteur"]
+        , results.elementAt(index)["email"]
+        , results.elementAt(index)["cin"]
+        , results.elementAt(index)["addresse"]
+        , results.elementAt(index)["date_entree"]
+        , results.elementAt(index)["date_abb"]
+        , results.elementAt(index)["nb_prets"]
+        , results.elementAt(index)["nb_prets_actuels"]
+        , results.elementAt(index)["nb_alertes"],
+         results.elementAt(index)["fidelite"],
+         results.elementAt(index)["nb_ouv_max"],
+         results.elementAt(index)["abonnement"],
+         results.elementAt(index)["nb_abonn"]
+);
+    
+     });
+     print(list);
+     print("object");
+     return list;
+      } catch (e) {
+        print(e);
+         return null;
+      }
+  }
+
+
+
+
+    Future<List<Pret?>> get_prets({required MySqlConnection mySqlConnection})async{
+     try {
+       Results results =await mySqlConnection.query("select * from pret order by debut_pret desc");
+       if(results.isNotEmpty){
+        return List.generate(results.length, (index){
+          return Pret.define(
+            results.elementAt(index)["idpret"],
+            results.elementAt(index)["nomlecteur"],
+            results.elementAt(index)["prenomlecteur"],
+             results.elementAt(index)["nomouvrage"],
+              results.elementAt(index)["auteur"], 
+              results.elementAt(index)["debut_pret"],
+               results.elementAt(index)["fin_pret"],
+                results.elementAt(index)["nompersonnel"], 
+                results.elementAt(index)["prenompersonnel"],
+                results.elementAt(index)["termine"]
+                );
+        });
+       }
+     } catch (e) {
+       print(e);
+     }
+     return [];
+  }
+
+
+    Future<void> delete_prets({required MySqlConnection mySqlConnection , required Pret pret })async{
+    try {
+
+     await mySqlConnection.query("update lecteur set nb_prets_actuels = nb_prets_actuels - 1 where nomlecteur = ? and prenomlecteur = ?",[
+       pret. nomlecteur,pret. prenomlecteur
+      ]);
+      await mySqlConnection.query("update lecteur set fidelite = fidelite + 1 where fidelite < 5 and nomlecteur = ? and prenomlecteur = ? ",[
+       pret. nomlecteur,pret. prenomlecteur
+      ]);
+     await  mySqlConnection.query("update ouvrage set nb_dispo = nb_dispo + 1  where nomouvrage = ? and nomauteur = ?",[
+       pret. nomouvrage,pret. auteur
+      ]);
+     await mySqlConnection.query("update pret set termine = 1 where idpret = ?",[pret. idpret]);
+    } catch (e) {
+      print(e);
+    }}
+     Future<bool> ajouter_pret(
+    {
+      required MySqlConnection mySqlConnection ,
+       required Pret pret
+    }
+  )async{
+    try{  Results query_on_lecteur = await mySqlConnection.query("select abonnement from lecteur where nomlecteur = ? and prenomlecteur = ? and nb_ouv_max > nb_prets_actuels and nb_alertes < 3",[
+     pret. nomlecteur ,pret. prenomlecteur
+    ]);
+   if(query_on_lecteur.isNotEmpty){
+     if( query_on_lecteur.elementAt(0)["abonnement"] < DateTimeRange(start:pret. debut_pret, end:pret. fin_pret).duration.inDays / 30 ){
+      print("Ce lecteur ne peut pas ....");
+    }else{
+      Results query_on_ouvrage = await mySqlConnection.query("select nb_dispo from ouvrage where nomouvrage= ? and nomauteur = ?",[
+       pret. nomouvrage,pret. auteur
+      ]);
+      if(query_on_ouvrage.isNotEmpty ){
+      if(query_on_ouvrage.elementAt(0)["nb_dispo"] > 0 ) { 
+         Results valider_pret = await mySqlConnection.query("insert into pret(nomlecteur,prenomlecteur,nomouvrage,auteur,nompersonnel,prenompersonnel,debut_pret,fin_pret,termine) values(?,?,?,?,?,?,?,?,?)",[
+         pret. nomlecteur ,pret. prenomlecteur,pret. nomouvrage,pret. auteur,pret.nompersonnel,pret. prenompersonnel,pret. debut_pret,pret.fin_pret,false
+         ]);
+         valider_pret = await mySqlConnection.query("update lecteur set nb_prets = nb_prets +1 , nb_prets_actuels = nb_prets_actuels +1  where nomlecteur = ? and prenomlecteur = ? ",[
+         pret. nomlecteur,pret. prenomlecteur
+         ]);
+         valider_pret = await mySqlConnection.query("update ouvrage set  nb_dispo = nb_dispo - 1 where nomouvrage = ? and nomauteur = ?",[
+         pret. nomouvrage,pret. auteur
+         ]);
+         valider_pret = await mySqlConnection.query("update personnel set pret_effectues = pret_effectues + 1 where nompersonnel = ? and prenompersonnel = ?",[
+         pret. nompersonnel,pret. prenompersonnel
+         ]);
+         return true;}
+      }
+      else {
+        print("Ouvrage indisponible !");
+      }
+    }
+    }}
+    catch(e){
+      print(e);
+    }
+    return false;
+  }
+  
+  
+  
+  
+
+
+    Future<bool>  add_Ouvrage({required MySqlConnection mySqlConnection ,required Ouvrage ouvrage
+ })async{
+     try {
+      Results results ;
+          results = await mySqlConnection.query("select idouvrage from ouvrage where nomouvrage = ? and nomauteur = ?",[
+           ouvrage. nomOuvrage,ouvrage. nomAuteur
+          ]);
+          if(results.isEmpty){
+          results = await mySqlConnection.query("insert into ouvrage(nomouvrage,nomauteur,nb,nb_dispo,nb_perdu,categorie,date_entree,prix) values(?,?,?,?,?,?,?,?)",[
+         ouvrage. nomOuvrage,ouvrage. nomAuteur,ouvrage.nb,ouvrage. nb,0,ouvrage.categorie,ouvrage.date_entree,ouvrage.prix
+        ]);}
+        else{
+          print("Ouvrage deja existe");
+        }
+
+        
+        return true;
+     } catch (e) {
+      print(e);
+       return false;
+     }
+  }
+  Future<List<Ouvrage>?> get_Ouvrages({required MySqlConnection mySqlConnection})async{
+     try {
+    
+               final Results results = await mySqlConnection.query("select * from ouvrage order by date_entree desc");
+          List<Ouvrage> list = List.generate(results.length, (index) {
+             return Ouvrage.define(results.elementAt(index)["nomouvrage"]
+             , results.elementAt(index)["nomauteur"]
+             , results.elementAt(index)["categorie"]
+             , results.elementAt(index)["nb"]
+             , results.elementAt(index)["nb_dispo"]
+             , results.elementAt(index)["nb_perdu"]
+             , results.elementAt(index)["prix"]
+                
+             , results.elementAt(index)["date_entree"]);
+          });
+
+          return list; 
+     } catch (e) {
+      print(e);
+       return null;
+     }
+  }
+
 }

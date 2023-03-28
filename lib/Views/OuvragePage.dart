@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/backend/Ouvrage.dart';
+import 'package:flutter_application_1/backend/Personnel.dart';
 import 'package:mysql1/mysql1.dart';
 
 
@@ -29,7 +30,9 @@ class _OuvragepageState extends State<Ouvragepage> {
   }
   @override
   Widget build(BuildContext context) {
-    final mysqlconn = ModalRoute.of(context)?.settings.arguments as MySqlConnection ;
+    final data =  ModalRoute.of(context)?.settings.arguments as List<dynamic>;
+    final personnel = data[0] as Personnel ;
+    final mysqlconn = data[1]as MySqlConnection ;
     return  Scaffold(
       appBar: AppBar(
         title:const Center(child: Text("Ouvrages")),
@@ -126,7 +129,7 @@ class _OuvragepageState extends State<Ouvragepage> {
             Container(
               height: 630,
               child: FutureBuilder(
-                future: Ouvrage().get_Ouvrages(mySqlConnection: mysqlconn),
+                future: personnel.get_Ouvrages(mySqlConnection: mysqlconn),
                 builder: (context, snapshot) {
                    Ouvrages = snapshot.data  ;
                   return ListView.builder(

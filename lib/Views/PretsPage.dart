@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/backend/Personnel.dart';
 import 'package:flutter_application_1/backend/Pret.dart';
 import 'package:mysql1/mysql1.dart';
 
@@ -29,7 +30,9 @@ class _PretsPageState extends State<PretsPage> {
   }
   @override
   Widget build(BuildContext context) {
-    final mysqlconn = ModalRoute.of(context)?.settings.arguments as MySqlConnection ;
+      final data =  ModalRoute.of(context)?.settings.arguments as List<dynamic>;
+    final personnel = data[0] as Personnel ;
+    final mysqlconn = data[1]as MySqlConnection ;
     return  Scaffold(
       appBar: AppBar(
         title:const Center(child: Text("Prets")),
@@ -109,7 +112,7 @@ class _PretsPageState extends State<PretsPage> {
             Container(
               height: 630,
               child: FutureBuilder(
-                future: Pret().get_prets(mySqlConnection: mysqlconn),
+                future: personnel.get_prets(mySqlConnection: mysqlconn),
                 builder: (context, snapshot) {
                    Prets = snapshot.data ?? []  ;
 
@@ -149,7 +152,7 @@ class _PretsPageState extends State<PretsPage> {
 
                                     able_to_remove ? TextButton(onPressed: ()async{
 
-                                         await P.elementAt(index).delete_prets(mySqlConnection: mysqlconn);
+                                         await personnel.delete_prets(mySqlConnection: mysqlconn,pret: P.elementAt(index));
                                                                                   
                                               setState(() {  
                                              P.elementAt(index).termine = 1;

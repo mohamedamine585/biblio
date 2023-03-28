@@ -70,7 +70,7 @@ class _MyHomePageState extends State<MyHomePage> {
                            ),
                         ),
                        onTap: (){
-                        Navigator.of(context).pushNamed(LecteurPage,arguments:mysqlconn);
+                        Navigator.of(context).pushNamed(LecteurPage,arguments:[user,mysqlconn]);
                        },
                                  
                         ),
@@ -89,7 +89,7 @@ class _MyHomePageState extends State<MyHomePage> {
                              ],
                            ),
                            onTap: (){
-                            Navigator.of(context).pushNamed(OuvragePage,arguments:mysqlconn);
+                            Navigator.of(context).pushNamed(OuvragePage,arguments:[user,mysqlconn]);
                            },
                          ),
                         ),),
@@ -107,7 +107,7 @@ class _MyHomePageState extends State<MyHomePage> {
                              ],
                            ),
                            onTap: (){
-                            Navigator.pushNamed(context, PretPage,arguments: mysqlconn);
+                            Navigator.pushNamed(context, PretPage,arguments: [user,mysqlconn]);
                            },
                       ),
                         ),),
@@ -130,7 +130,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                                      ],
                                                    ),
                                                    onTap: (){
-                                                     Navigator.of(context).pushNamed(AjouLecView,arguments:mysqlconn);
+                                                     Navigator.of(context).pushNamed(AjouLecView,arguments:[user, mysqlconn]);
                                                    },
                                   ),
                         ),),
@@ -147,7 +147,7 @@ class _MyHomePageState extends State<MyHomePage> {
                              ],
                            ),
                            onTap: (){
-                            Navigator.of(context).pushNamed(AjouOuvView,arguments:mysqlconn);
+                            Navigator.of(context).pushNamed(AjouOuvView,arguments:[user, mysqlconn]);
                            },
                       ),
                         ),),

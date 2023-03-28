@@ -1,17 +1,16 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/backend/Lecteur.dart';
-import 'package:flutter_application_1/backend/Personnel.dart';
 import 'package:mysql1/mysql1.dart';
 
-class AjouterLecteur extends StatefulWidget {
-  const AjouterLecteur({super.key});
+class Infolecteurpage extends StatefulWidget {
+  const Infolecteurpage({super.key});
 
   @override
-  State<AjouterLecteur> createState() => _AjouterLecteurState();
+  State<Infolecteurpage> createState() => _InfolecteurpageState();
 }
 
-class _AjouterLecteurState extends State<AjouterLecteur> {
+class _InfolecteurpageState extends State<Infolecteurpage> {
   
   @override
   late final TextEditingController nom ; 
@@ -41,9 +40,10 @@ class _AjouterLecteurState extends State<AjouterLecteur> {
   
   @override
   Widget build(BuildContext context) {
-    final data =  ModalRoute.of(context)?.settings.arguments as List<dynamic>;
-    final Personnel personnel = data[0];
-    final MySqlConnection mySqlConnection = data[1];
+    final  data = ModalRoute.of(context)?.settings.arguments as List<dynamic>;
+    final mysqlconnection = data[0] as MySqlConnection;
+    final lecteur = data[1] as Lecteur; 
+
     return  Scaffold(
       appBar: AppBar(
         title:const Center(child: const Text("Ajouter un Lecteur")),
@@ -55,6 +55,7 @@ class _AjouterLecteurState extends State<AjouterLecteur> {
             Container(
               width: 400,
               child: TextField(
+                
                 controller: nom,
                 decoration: InputDecoration(
                   hintText:"Nom du lecteur",
@@ -158,7 +159,7 @@ class _AjouterLecteurState extends State<AjouterLecteur> {
                    
                
                 final lecteur =Lecteur.define( nom.text, prenom.text, email.text,int.parse(cin.text), adresse.text, DateTime.now(),DateTime.now(), 0,0,0,0,abonnement*3,abonnement,1);
-                bool added= await personnel.add_lecteur(mySqlConnection: mySqlConnection,lecteur: lecteur);
+                bool added= await lecteur.add_lecteur(mySqlConnection: mySqlConnection);
                 if(added) {
                   Navigator.of(context).pop();
                 }

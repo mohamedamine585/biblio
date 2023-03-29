@@ -7,3 +7,4 @@ const Homepage = 'Homepage';
 const AuthenView = 'Authenview';
 const AjouPretView = "AjouPretView";
 const PretPage = "PretPage";
+const Infopage = "Infopage";

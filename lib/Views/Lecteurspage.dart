@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/Consts.dart';
 import 'package:flutter_application_1/backend/Lecteur.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:mysql1/mysql1.dart';
@@ -70,6 +71,7 @@ class _LecteurpageState extends State<Lecteurpage> {
                             fontSize: 18
                           ),),
             ),),
+        
             Container(
               height: 630,
               child: FutureBuilder(
@@ -87,7 +89,9 @@ class _LecteurpageState extends State<Lecteurpage> {
                         title:
                           Card(child: 
                           InkWell(
-                            onTap: (){},
+                            onTap: (){
+                              Navigator.of(context).pushNamed( Infopage,arguments: [mysqlconn,lecs.elementAt(index),personnel]);
+                            },
                             child: Container(
                               height: 50,
                               width: 100,
@@ -119,7 +123,14 @@ class _LecteurpageState extends State<Lecteurpage> {
                                  ),
                                  onRatingUpdate: (rating) {
                                    return;
-                                 },)
+                                 },),
+                                const SizedBox(width: 15,),
+                                TextButton(onPressed: ()async{
+                                  final deleted = await personnel.supprimer_lecteur(mySqlConnection: mysqlconn, lecteur: lecs.elementAt(index));
+                                  if(deleted){
+                                    Navigator.of(context).pop();
+                                  }
+                                }, child: const Text("Supprimer le lecteur"))
                                   ],
                                 ),
                               ))),

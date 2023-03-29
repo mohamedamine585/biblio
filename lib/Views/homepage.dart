@@ -27,7 +27,7 @@ class _MyHomePageState extends State<MyHomePage> {
              actions: [
               IconButton(onPressed: (){
                 if(user.grade == 'president') {
-                  Navigator.of(context).pushNamed(AjouPersView,arguments:mysqlconn);
+                  Navigator.of(context).pushNamed(AjouPersView,arguments:[user, mysqlconn]);
                 }
               }, icon: Icon(Icons.person_add)),
               SizedBox(width: 10,),

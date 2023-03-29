@@ -49,7 +49,9 @@ class _AjouterPersonnelState extends State<AjouterPersonnel> {
   
   @override
   Widget build(BuildContext context) {
-    final MySqlConnection mySqlConnection = ModalRoute.of(context)?.settings.arguments as MySqlConnection;
+    final data = ModalRoute.of(context)?.settings.arguments as List<dynamic>;
+    final personnel = data[0] as Personnel;
+    final mysqlConn = data[1] as MySqlConnection;
     return  Scaffold(
       appBar: AppBar(
         title:const Center(child: const Text("Ajouter un Personnel")),
@@ -198,8 +200,8 @@ class _AjouterPersonnelState extends State<AjouterPersonnel> {
                      grade = "officier";
                 if(mot_de_passe.text == Cmotdepasse.text) {
                 
-                 Personnel personnel =  Personnel.define( nom.text, prenom.text, email.text, grade, int.parse(age.text),DateTime.now() , 0,Crypt.sha256(mot_de_passe.text).hash,adresse.text,int.parse(cin.text),0);
-                  bool added =await personnel.ajouter_personnel(mySqlConnection: mySqlConnection);
+                 Personnel pers =  Personnel.define( nom.text, prenom.text, email.text, grade, int.parse(age.text),DateTime.now() , 0,Crypt.sha256(mot_de_passe.text).hash,adresse.text,int.parse(cin.text),0,null);
+                  bool added =await personnel.ajouter_personnel(mySqlConnection: mysqlConn,personnel:pers);
                   if(added){
 
                     Navigator.of(context).pop();

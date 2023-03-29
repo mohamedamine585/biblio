@@ -120,7 +120,7 @@ class _PretsPageState extends State<PretsPage> {
                       itemCount: P.length,
                       itemBuilder: (context,index){
                       final temps_pret_restant = DateTimeRange(start: DateTime.now().toUtc(), end: P.elementAt(index).fin_pret).duration.inDays ;
-                      bool able_to_remove = snapshot.data?.elementAt(index)?.termine == 0;
+                      final able_to_remove = snapshot.data?.elementAt(index)?.termine;
                       return ListTile(
                       
                         title:
@@ -145,12 +145,12 @@ class _PretsPageState extends State<PretsPage> {
                                   
                                                                       Text("Debut de pret : ${P.elementAt(index).debut_pret.day}-${P.elementAt(index).debut_pret.month}-${P.elementAt(index).debut_pret.year}    "),
 
-                                    able_to_remove ?   Text("  Reste : ${temps_pret_restant}" ,style: TextStyle(color: temps_pret_restant > 0 ? Colors.black : Colors.red),):                                  
+                                    able_to_remove == 0  ?   Text("  Reste : ${temps_pret_restant}" ,style: TextStyle(color: temps_pret_restant > 0 ? Colors.black : Colors.red) ,):                                  
                                    Text("Fin de pret : ${P.elementAt(index).fin_pret.day}-${P.elementAt(index).fin_pret.month}-${P.elementAt(index).fin_pret.year}    "),
 
                                     const    SizedBox(width: 20,),
 
-                                    able_to_remove ? TextButton(onPressed: ()async{
+                                    able_to_remove == 0 ? TextButton(onPressed: ()async{
 
                                          await personnel.delete_prets(mySqlConnection: mysqlconn,pret: P.elementAt(index));
                                                                                   
@@ -163,7 +163,7 @@ class _PretsPageState extends State<PretsPage> {
                                            
                                     },
                                
-                                     child:const Text("Terminer pret")):const Text("Pret terminé",style: TextStyle(color: Colors.grey),),
+                                     child:const Text("Terminer pret")): able_to_remove==1 ? const Text("Pret terminé",style: TextStyle(color: Colors.grey),) :const Text("Ouvrage Perdu",style: TextStyle(color: Color.fromARGB(255, 143, 16, 16)),) ,
                                     const SizedBox(width: 50,),
                                    
                                   ],

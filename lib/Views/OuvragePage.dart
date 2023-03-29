@@ -177,7 +177,12 @@ class _OuvragepageState extends State<Ouvragepage> {
                                     Text("Date d'entrée : ${Ouvs.elementAt(index).date_entree.day}-${Ouvs.elementAt(index).date_entree.month}-${Ouvs.elementAt(index).date_entree.year}    "),
                                   
                                     SizedBox(width: 50,),
-                                   
+                                   TextButton(onPressed: ()async{
+                                    final deleted = await personnel.supprimer_ouvrage(mySqlConnection: mysqlconn, ouvrage: Ouvs.elementAt(index));
+                                    if(deleted){
+                                      Navigator.of(context).pop();
+                                    }
+                                   }, child: const Text("supprimer l'ouvrage"))
                                   ],
                                 ),
                               ))),

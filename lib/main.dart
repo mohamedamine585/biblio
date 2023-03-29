@@ -3,6 +3,7 @@
 
 
 
+
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Consts.dart';
 import 'package:flutter_application_1/Views/AjouLecView.dart';
@@ -10,6 +11,7 @@ import 'package:flutter_application_1/Views/AjouPretView.dart';
 import 'package:flutter_application_1/Views/AjoutOuvrage.dart';
 import 'package:flutter_application_1/Views/AjoutPersonnel.dart';
 import 'package:flutter_application_1/Views/AuthentificationView.dart';
+import 'package:flutter_application_1/Views/InfoLecteurpage.dart';
 import 'package:flutter_application_1/Views/OuvragePage.dart';
 import 'package:flutter_application_1/Views/PretsPage.dart';
 import 'package:flutter_application_1/Views/homepage.dart';
@@ -26,6 +28,7 @@ void main() {
       AuthenView :(context)=> AuthentificationView(),
       AjouPretView:(context)=>AjouterPret(),
       PretPage :(context)=> PretsPage(),
+      Infopage :(context)=>Infolecteurpage(),
     },
     debugShowCheckedModeBanner: false,
       theme: ThemeData(

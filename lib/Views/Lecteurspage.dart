@@ -106,7 +106,7 @@ class _LecteurpageState extends State<Lecteurpage> {
                                     ),
                                     Text("CIN : ${lecs.elementAt(index).Cin}    "),
                                     
-                                    Text("Date d'entrée : ${lecs.elementAt(index).date_entree.day}-${lecs.elementAt(index).date_entree.month}-${lecs.elementAt(index).date_entree.year}    ${lecs.elementAt(index).nb_prets } prets "),
+                                    Text("Date d'entrée : ${lecs.elementAt(index).date_entree.day}-${lecs.elementAt(index).date_entree.month}-${lecs.elementAt(index).date_entree.year}    ${lecs.elementAt(index).nb_prets_actuels } prets "),
                                     Text("    Abonnement : A${lecs.elementAt(index).abonnement}  ${lecs.elementAt(index).date_abonnement.day}-${lecs.elementAt(index).date_abonnement.month}-${lecs.elementAt(index).date_abonnement.year} : ${lecs.elementAt(index).date_abonnement.hour}:${lecs.elementAt(index).date_abonnement.minute}",style: TextStyle(color: Colors.blue),),
                                   
                                     Text("  Reste : ${temps_abonn_restant}" ,style: TextStyle(color: temps_abonn_restant > 0 ? Colors.black : Colors.red),),

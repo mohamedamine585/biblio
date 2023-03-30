@@ -119,8 +119,14 @@ class _PretsPageState extends State<PretsPage> {
                   return ListView.builder(
                       itemCount: P.length,
                       itemBuilder: (context,index){
-                      final temps_pret_restant = DateTimeRange(start: DateTime.now().toUtc(), end: P.elementAt(index).fin_pret).duration.inDays ;
-                      final able_to_remove = snapshot.data?.elementAt(index)?.termine;
+                          int temps_pret_restant;
+                      try{
+                       temps_pret_restant = DateTimeRange(start: DateTime.now().toUtc(), end: P.elementAt(index).fin_pret ).duration.inDays ;
+
+                      }catch(e){
+                         temps_pret_restant = 0 ;
+                      }
+                      final able_to_remove = P.elementAt(index).termine;
                       return ListTile(
                       
                         title:

@@ -35,8 +35,6 @@ class Personnel {
           nom, prenom, results1.elementAt(0)["email"],
          results1.elementAt(0)["grade"],
           results1.elementAt(0)["age"], 
-          
-          
            results1.elementAt(0)["date_entree"], 
            results1.elementAt(0)["pret_effectues"],
             mot_de_passe, 
@@ -49,6 +47,7 @@ class Personnel {
       final Results results2 = await mySqlConnection.query("update personnel set derniere_activite = ? where cin = ?",[
         DateTime.now().toUtc(),user?.cin
       ]);
+     await envoyer_evertissements(mySqlConnection: mySqlConnection);
       return user;
     } catch (e) {
       return null;
@@ -185,6 +184,25 @@ class Personnel {
   }
 
 
+  
+    
+    Future<void> envoyer_evertissements({required MySqlConnection mySqlConnection})async{
+      try {
+     Results results =    await mySqlConnection.query("select idlecteur,idpret from pret where (fin_pret + interval 30 day  < ? ) and termine = 0 and  not exists ( select idlecteur,idpret from avertissement where pret.idlecteur = idlecteur and pret.idpret = idpret)",[
+      DateTime.now().toUtc()
+     ]);
+     results.forEach((element) async{
+            await mySqlConnection.query("insert into avertissement(idlecteur,idpret) values(?,?)",[
+              element["idlecteur"],element["idpret"]
+            ]);
+            await mySqlConnection.query("update lecteur set nb_alertes = nb_alertes +1  where idlecteur = ?",[
+              element["idlecteur"]
+            ]);
+      });
+      } catch (e) {
+        print(e);
+      }
+    }
 
 
     Future<List<Pret?>> get_prets({required MySqlConnection mySqlConnection})async{
@@ -287,6 +305,9 @@ class Personnel {
         print("Ouvrage indisponible !");
       }
     }
+    }
+    else{
+      print("Lecteur inexistant ou exclu");
     }}
     catch(e){
       print(e);

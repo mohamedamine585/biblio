@@ -112,7 +112,9 @@ class Personnel {
       Results results = await mySqlConnection.query("delete from ouvrage where idouvrage = ? ",[
         ouvrage.idouvrage
       ]);
+      
       if(results.affectedRows != 0) {
+        
         return true;
       }
       
@@ -125,14 +127,12 @@ class Personnel {
    Future<bool> supprimer_lecteur({required MySqlConnection mySqlConnection , required Lecteur lecteur})async {
     try {
       print(lecteur.idlecteur);
-      await mySqlConnection.query("update pret set termine = 2 where  nomlecteur = ? and prenomlecteur = ?",[
-        lecteur.nom,lecteur.prenom
-      ]);
-      
-        await mySqlConnection.query("update ouvrage set nb = nb - 1,nb_perdu = nb_perdu + 1    where idouvrage  in (select idouvrage from pret where  nomlecteur = ? and prenomlecteur = ?);"
-        ,[lecteur.nom,
-        lecteur.prenom]);
+       await mySqlConnection.query("update ouvrage set nb = nb - 1  ,nb_perdu = nb_perdu + 1    where idouvrage  in (select idouvrage from pret where  idlecteur = ? and termine = 0);"
+        ,[lecteur.idlecteur]);
+              await mySqlConnection.query("delete from avertissement where idlecteur = ?",[lecteur.idlecteur]);
+
       await mySqlConnection.query("delete from pret where idlecteur = ?",[lecteur.idlecteur]);
+      await mySqlConnection.query("delete from avertissement where idlecteur = ?",[lecteur.idlecteur]);
       Results results = await mySqlConnection.query("delete from lecteur where idlecteur  = ? ",[
                 lecteur.idlecteur
 
@@ -188,7 +188,7 @@ class Personnel {
     
     Future<void> envoyer_evertissements({required MySqlConnection mySqlConnection})async{
       try {
-     Results results =    await mySqlConnection.query("select idlecteur,idpret from pret where (fin_pret + interval 30 day  < ? ) and termine = 0 and  not exists ( select idlecteur,idpret from avertissement where pret.idlecteur = idlecteur and pret.idpret = idpret)",[
+     Results results =    await mySqlConnection.query("select idlecteur,idpret from pret where (fin_pret   < ? ) and termine = 0 and  not exists ( select idlecteur,idpret from avertissement where pret.idlecteur = idlecteur and pret.idpret = idpret)",[
       DateTime.now().toUtc()
      ]);
      results.forEach((element) async{
@@ -196,6 +196,9 @@ class Personnel {
               element["idlecteur"],element["idpret"]
             ]);
             await mySqlConnection.query("update lecteur set nb_alertes = nb_alertes +1  where idlecteur = ?",[
+              element["idlecteur"]
+            ]);
+            await mySqlConnection.query(" update lecteur set fidelite = fidelite - 1 where fidelite > 0 and idlecteur = ?",[
               element["idlecteur"]
             ]);
       });
@@ -207,11 +210,15 @@ class Personnel {
 
     Future<List<Pret?>> get_prets({required MySqlConnection mySqlConnection})async{
      try {
-       Results results =await mySqlConnection.query("select * from pret order by debut_pret desc");
+       Results results =await mySqlConnection.query("select idpret,pret.idpersonnel,pret.idlecteur,pret.idouvrage,nomlecteur,prenomlecteur,nomouvrage,nomauteur,debut_pret,fin_pret,nompersonnel,prenompersonnel,termine from pret join ouvrage on ouvrage.idouvrage = pret.idouvrage  join lecteur on pret.idlecteur = lecteur.idlecteur join personnel on personnel.idpersonnel = pret.idpersonnel order by debut_pret desc;");
        if(results.isNotEmpty){
         return List.generate(results.length, (index){
-          return Pret.define(
+         return  Pret.define(
             results.elementAt(index)["idpret"],
+            results.elementAt(index)["idlecteur"],
+            results.elementAt(index)["idouvrage"],
+            results.elementAt(index)["idpersonnel"],
+
             results.elementAt(index)["nomlecteur"],
             results.elementAt(index)["prenomlecteur"],
              results.elementAt(index)["nomouvrage"],
@@ -252,13 +259,13 @@ class Personnel {
     Future<void> delete_prets({required MySqlConnection mySqlConnection , required Pret pret })async{
     try {
 
-     await mySqlConnection.query("update lecteur set nb_prets_actuels = nb_prets_actuels - 1 where nomlecteur = ? and prenomlecteur = ?",[
-       pret. nomlecteur,pret. prenomlecteur
+     await mySqlConnection.query("update lecteur set nb_prets_actuels = nb_prets_actuels - 1 where idlecteur = ?",[
+       pret. idpret
       ]);
-      await mySqlConnection.query("update lecteur set fidelite = fidelite + 1 where fidelite < 5 and nomlecteur = ? and prenomlecteur = ? ",[
-       pret. nomlecteur,pret. prenomlecteur
+      await mySqlConnection.query("update lecteur set fidelite = fidelite + 1 where fidelite < 5 and nb_alertes < 3 and idlecteur = ? ",[
+      pret.idlecteur
       ]);
-     await  mySqlConnection.query("update ouvrage set nb_dispo = nb_dispo + 1  where nomouvrage = ? and nomauteur = ?",[
+     await  mySqlConnection.query("update ouvrage set nb_dispo = nb_dispo + 1  where idouvrage = ?",[
        pret. nomouvrage,pret. auteur
       ]);
      await mySqlConnection.query("update pret set termine = 1 where idpret = ?",[pret. idpret]);
@@ -267,8 +274,40 @@ class Personnel {
     }}
 
 
-
+    Future<List<Lecteur>?> get_lecteurs_avertis({required MySqlConnection mySqlConnection})async{
+        try {
+       
+      Results results =  await  mySqlConnection.query("select  fidelite,lecteur.idlecteur, nomlecteur,prenomlecteur,cin,nb_alertes,email,nb_prets,nb_prets_actuels,nb_ouv_max,abonnement,nb_abonn  from avertissement join lecteur on avertissement.idlecteur = lecteur.idlecteur join pret on avertissement.idpret = pret.idpret join ouvrage on pret.idouvrage = ouvrage.idouvrage group by avertissement.idlecteur ");
+      
+    List<Lecteur> list = List<Lecteur>.generate(results.length, (index) {
+        return Lecteur.define(
+          results.elementAt(index)["idlecteur"],
+          results.elementAt(index)["nomlecteur"]
+        , results.elementAt(index)["prenomlecteur"]
+        , results.elementAt(index)["email"]
+        , results.elementAt(index)["cin"]
+        ,null
+        ,null
+        , null
+        , results.elementAt(index)["nb_prets"]
+        , results.elementAt(index)["nb_prets_actuels"]
+        , results.elementAt(index)["nb_alertes"],
+         results.elementAt(index)["fidelite"],
+         results.elementAt(index)["nb_ouv_max"],
+         results.elementAt(index)["abonnement"],
+         results.elementAt(index)["nb_abonn"]
+);
     
+     });
+     print(list);
+     print("object");
+     return list;
+      } catch (e) {
+        print(e);
+         return null;
+      }
+    }
+     
      Future<bool> ajouter_pret(
     {
       required MySqlConnection mySqlConnection ,
@@ -287,8 +326,8 @@ class Personnel {
       ]);
       if(query_on_ouvrage.isNotEmpty ){
       if(query_on_ouvrage.elementAt(0)["nb_dispo"] > 0 ) { 
-         Results valider_pret = await mySqlConnection.query("insert into pret(idouvrage,idpersonnel,idlecteur,nomlecteur,prenomlecteur,nomouvrage,nomauteur,nompersonnel,prenompersonnel,debut_pret,fin_pret,termine) values(?,?,?,?,?,?,?,?,?,?,?,?)",[
-      query_on_ouvrage.elementAt(0)["idouvrage"],  idpersonnel,query_on_lecteur.elementAt(0)["idlecteur"], pret. nomlecteur ,pret. prenomlecteur,pret. nomouvrage,pret. auteur,pret.nompersonnel,pret. prenompersonnel,pret. debut_pret,pret.fin_pret,false
+         Results valider_pret = await mySqlConnection.query("insert into pret(idouvrage,idpersonnel,idlecteur,debut_pret,fin_pret,termine) values(?,?,?,?,?,?)",[
+      query_on_ouvrage.elementAt(0)["idouvrage"],  idpersonnel,query_on_lecteur.elementAt(0)["idlecteur"], pret. debut_pret,pret.fin_pret,false
          ]);
          valider_pret = await mySqlConnection.query("update lecteur set nb_prets = nb_prets +1 , nb_prets_actuels = nb_prets_actuels +1  where nomlecteur = ? and prenomlecteur = ? ",[
          pret. nomlecteur,pret. prenomlecteur

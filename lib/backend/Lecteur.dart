@@ -10,7 +10,7 @@ class Lecteur{
   int? Cin,idlecteur; 
   int nb_prets ,nb_prets_actuels , nb_alertes ,fidelite , nb_ouv_max , abonnement , nb_abonn ;
    
-  DateTime date_entree , date_abonnement ;
+  DateTime? date_entree , date_abonnement ;
 
 
 

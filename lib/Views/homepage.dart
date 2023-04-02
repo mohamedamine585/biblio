@@ -174,11 +174,14 @@ class _MyHomePageState extends State<MyHomePage> {
                       Card(       elevation: 5,
                                  child: Container(height: 200,
                         width: 200,child:InkWell(
+                          onTap: (){
+                            Navigator.of(context).pushNamed(PageLectAvertis,arguments: [user,mysqlconn]);
+                          },
                         child: Column(
                              children: const[
                               SizedBox(height: 50,),
                               Icon(Icons.person_off,size: 50,),
-                               Text("Exclure Lecteur",style: TextStyle(fontStyle: FontStyle.italic,color: Colors.black,fontSize: 20),),
+                               Text("Lecteurs avertis",style: TextStyle(fontStyle: FontStyle.italic,color: Colors.black,fontSize: 20),),
                              ],
                            ),
                       ),

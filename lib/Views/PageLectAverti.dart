@@ -7,14 +7,14 @@ import 'package:mysql1/mysql1.dart';
 import '../backend/Personnel.dart';
 
 
-class Lecteurpage extends StatefulWidget {
-  const Lecteurpage({super.key});
+class LecteurAverti extends StatefulWidget {
+  const LecteurAverti({super.key});
 
   @override
-  State<Lecteurpage> createState() => _LecteurpageState();
+  State<LecteurAverti> createState() => _LecteurAvertiState();
 }
 
-class _LecteurpageState extends State<Lecteurpage> {
+class _LecteurAvertiState extends State<LecteurAverti> {
   List<Lecteur>? Lecteurs = [];
   List<Lecteur> lecs = [];
   @override
@@ -35,7 +35,7 @@ class _LecteurpageState extends State<Lecteurpage> {
     final personnel = data[0] as Personnel ;
     final mysqlconn = data[1]as MySqlConnection ;    return  Scaffold(
       appBar: AppBar(
-        title:const Center(child: Text("Lecteurs")),
+        title:const Center(child: Text("Lecteurs Avertis")),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -75,14 +75,13 @@ class _LecteurpageState extends State<Lecteurpage> {
             Container(
               height: 630,
               child: FutureBuilder(
-                future: personnel.get_lecteurs(mySqlConnection: mysqlconn),
+                future: personnel.get_lecteurs_avertis(mySqlConnection: mysqlconn),
                 builder: (context, snapshot) {
                    Lecteurs = snapshot.data  ;
 
                   return ListView.builder(
                       itemCount: lecs.length,
                       itemBuilder: (context,index){
-                      final temps_abonn_restant =30- DateTimeRange(start: lecs.elementAt(index).date_abonnement!, end: DateTime.now()).duration.inDays;
                       
                       return ListTile(
                       
@@ -106,10 +105,8 @@ class _LecteurpageState extends State<Lecteurpage> {
                                     ),
                                     Text("CIN : ${lecs.elementAt(index).Cin}    "),
                                     
-                                    Text("Date d'entrée : ${lecs.elementAt(index).date_entree?.day}-${lecs.elementAt(index).date_entree?.month}-${lecs.elementAt(index).date_entree?.year}    ${lecs.elementAt(index).nb_prets_actuels } prets "),
-                                    Text("    Abonnement : A${lecs.elementAt(index).abonnement}  ${lecs.elementAt(index).date_abonnement?.day}-${lecs.elementAt(index).date_abonnement?.month}-${lecs.elementAt(index).date_abonnement?.year} : ${lecs.elementAt(index).date_abonnement?.hour}:${lecs.elementAt(index).date_abonnement?.minute}",style: TextStyle(color: Colors.blue),),
-                                  
-                                    Text("  Reste : ${temps_abonn_restant}" ,style: TextStyle(color: temps_abonn_restant > 0 ? Colors.black : Colors.red),),
+                                    SizedBox(width: 20,),
+                                    Text("nombres d'alertes : ${lecs.elementAt(index).nb_alertes}",style: TextStyle(fontWeight: FontWeight.bold)),
                                     SizedBox(width: 50,),
                                     RatingBar.builder(
                                       itemSize: 20,
@@ -126,9 +123,12 @@ class _LecteurpageState extends State<Lecteurpage> {
                                  },),
                                 const SizedBox(width: 15,),
                                 TextButton(onPressed: ()async{
+                                  
                                   final deleted = await personnel.supprimer_lecteur(mySqlConnection: mysqlconn, lecteur: lecs.elementAt(index));
                                   if(deleted){
-                                    Navigator.of(context).pop();
+                                    setState(() {
+                                      Navigator.of(context).pop();
+                                    });
                                   }
                                 }, child: const Text("Supprimer le lecteur"))
                                   ],

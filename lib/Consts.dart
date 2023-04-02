@@ -8,3 +8,4 @@ const AuthenView = 'Authenview';
 const AjouPretView = "AjouPretView";
 const PretPage = "PretPage";
 const Infopage = "Infopage";
+const PageLectAvertis = "PageLectAvertis";

@@ -13,6 +13,7 @@ import 'package:flutter_application_1/Views/AjoutPersonnel.dart';
 import 'package:flutter_application_1/Views/AuthentificationView.dart';
 import 'package:flutter_application_1/Views/InfoLecteurpage.dart';
 import 'package:flutter_application_1/Views/OuvragePage.dart';
+import 'package:flutter_application_1/Views/PageLectAverti.dart';
 import 'package:flutter_application_1/Views/PretsPage.dart';
 import 'package:flutter_application_1/Views/homepage.dart';
 import 'Views/Lecteurspage.dart';
@@ -29,6 +30,7 @@ void main() {
       AjouPretView:(context)=>AjouterPret(),
       PretPage :(context)=> PretsPage(),
       Infopage :(context)=>Infolecteurpage(),
+      PageLectAvertis :(context)=>LecteurAverti(),
     },
     debugShowCheckedModeBanner: false,
       theme: ThemeData(

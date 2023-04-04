@@ -14,8 +14,9 @@ class PretsPage extends StatefulWidget {
 
 class _PretsPageState extends State<PretsPage> {
   List<Pret?> Prets = [];
-  List<Pret> P = [],Ptemp = [];
+  List<Pret?> P = [],Ptemp = [];
   bool actuelfiltre = false ;
+   String s = "";
   @override
   late final TextEditingController query ;
   @override
@@ -33,6 +34,8 @@ class _PretsPageState extends State<PretsPage> {
       final data =  ModalRoute.of(context)?.settings.arguments as List<dynamic>;
     final personnel = data[0] as Personnel ;
     final mysqlconn = data[1]as MySqlConnection ;
+    P = Prets.where((element) => (element!.nompersonnel.contains(s)  || (element.prenompersonnel.contains(s)) 
+                        || element.nomouvrage.contains(s)  || (element.auteur.contains(s) || (element.nomlecteur.contains(s)) ||(element.prenomlecteur.contains(s)) )) && (!actuelfiltre || (element.termine == 0))).toList();
     return  Scaffold(
       appBar: AppBar(
         title:const Center(child: Text("Prets")),
@@ -52,22 +55,7 @@ class _PretsPageState extends State<PretsPage> {
                     
                     onChanged: (value) {
                       setState(() {
-                        P.clear();
-                        Prets.forEach((element) { 
-                          if((element!.nompersonnel.contains(value)  || (element.prenompersonnel.contains(value)) 
-                        || element.nomouvrage.contains(value)  || (element.auteur.contains(value) || (element.nomlecteur.contains(value)) ||(element.prenomlecteur.contains(value)) )) )
-                         {
-                          Ptemp = P ;
-                          if(actuelfiltre && element.termine == 0){
-                            P.add(element);
-                          }
-                         else if(!actuelfiltre){P.add(element);
-                          Ptemp = P ; 
-                         }
-                        
-                         }
-                        
-                        }); 
+                       s = value;
                         
                       });
                     },
@@ -94,14 +82,7 @@ class _PretsPageState extends State<PretsPage> {
                  Checkbox(value: actuelfiltre, onChanged:(act){
                 setState(() 
                    {  actuelfiltre = act!;
-                    if(actuelfiltre){
-                     P = Ptemp;
-                      P =  P.where((element) => element.termine == 0).toList();
-                      
-                    }else{
-                      print(Ptemp.length);
-                      P = Ptemp ;
-                    }}
+                    }
                 ); 
                 })
               ],
@@ -121,12 +102,12 @@ class _PretsPageState extends State<PretsPage> {
                       itemBuilder: (context,index){
                           int temps_pret_restant;
                       try{
-                       temps_pret_restant = DateTimeRange(start: DateTime.now().toUtc(), end: P.elementAt(index).fin_pret ).duration.inDays ;
+                       temps_pret_restant = DateTimeRange(start: DateTime.now().toUtc(), end: (P.elementAt(index)?.fin_pret)!).duration.inDays ;
 
                       }catch(e){
                          temps_pret_restant = 0 ;
                       }
-                      final able_to_remove = P.elementAt(index).termine;
+                      int able_to_remove = P.elementAt(index)?.termine ?? 0;
                       return ListTile(
                       
                         title:
@@ -143,26 +124,26 @@ class _PretsPageState extends State<PretsPage> {
                                     SingleChildScrollView(
                                       child: Container(
                                         width: 400,
-                                        child: Text("${P.elementAt(index).nomouvrage} ${P.elementAt(index).auteur}")),
+                                        child: Text("${P.elementAt(index)?.nomouvrage} ${P.elementAt(index)?.auteur}")),
                                     ),
-                                    Text("Lecteur : ${P.elementAt(index).nomlecteur}  ${P.elementAt(index).prenomlecteur}    "),
+                                    Text("Lecteur : ${P.elementAt(index)?.nomlecteur}  ${P.elementAt(index)?.prenomlecteur}    "),
                                     
-                                    Text(" Personnel : ${P.elementAt(index).nompersonnel}  ${P.elementAt(index).prenompersonnel}   "),
+                                    Text(" Personnel : ${P.elementAt(index)?.nompersonnel}  ${P.elementAt(index)?.prenompersonnel}   "),
                                   
-                                                                      Text("Debut de pret : ${P.elementAt(index).debut_pret.day}-${P.elementAt(index).debut_pret.month}-${P.elementAt(index).debut_pret.year}    "),
+                                                                      Text("Debut de pret : ${P.elementAt(index)?.debut_pret.day}-${P.elementAt(index)?.debut_pret.month}-${P.elementAt(index)?.debut_pret.year}    "),
 
                                     able_to_remove == 0  ?   Text("  Reste : ${temps_pret_restant}" ,style: TextStyle(color: temps_pret_restant > 0 ? Colors.black : Colors.red) ,):                                  
-                                   Text("Fin de pret : ${P.elementAt(index).fin_pret.day}-${P.elementAt(index).fin_pret.month}-${P.elementAt(index).fin_pret.year}    "),
+                                   Text("Fin de pret : ${P.elementAt(index)?.fin_pret.day}-${P.elementAt(index)?.fin_pret.month}-${P.elementAt(index)?.fin_pret.year}    "),
 
                                     const    SizedBox(width: 20,),
 
                                     able_to_remove == 0 ? TextButton(onPressed: ()async{
 
-                                         await personnel.delete_prets(mySqlConnection: mysqlconn,pret: P.elementAt(index));
+                                         await personnel.delete_prets(mySqlConnection: mysqlconn,pret: P.elementAt(index)!);
                                                                                   
                                               setState(() {  
-                                             P.elementAt(index).termine = 1;
                                              build(context);
+                                             
                                            });
 
                                       

@@ -157,9 +157,7 @@ class _OuvragepageState extends State<Ouvragepage> {
                                    TextButton(onPressed: ()async{
                                     final deleted = await personnel.supprimer_ouvrage(mySqlConnection: mysqlconn, ouvrage: Ouvs.elementAt(index));
                                     if(deleted){
-                                      setState(() {
-                                         query.text = 'a';
-                                      });
+                                     Navigator.of(context).pop();
                                     }
                                    }, child: const Text("supprimer l'ouvrage"))
                                   ],

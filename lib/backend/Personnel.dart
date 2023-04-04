@@ -47,7 +47,6 @@ class Personnel {
       final Results results2 = await mySqlConnection.query("update personnel set derniere_activite = ? where cin = ?",[
         DateTime.now().toUtc(),user?.cin
       ]);
-     await envoyer_evertissements(mySqlConnection: mySqlConnection);
       return user;
     } catch (e) {
       return null;
@@ -276,8 +275,9 @@ class Personnel {
 
     Future<List<Lecteur>?> get_lecteurs_avertis({required MySqlConnection mySqlConnection})async{
         try {
-       
-      Results results =  await  mySqlConnection.query("select  fidelite,lecteur.idlecteur, nomlecteur,prenomlecteur,cin,nb_alertes,email,nb_prets,nb_prets_actuels,nb_ouv_max,abonnement,nb_abonn  from avertissement join lecteur on avertissement.idlecteur = lecteur.idlecteur join pret on avertissement.idpret = pret.idpret join ouvrage on pret.idouvrage = ouvrage.idouvrage group by avertissement.idlecteur ");
+            await envoyer_evertissements(mySqlConnection: mySqlConnection);
+
+      Results results =  await  mySqlConnection.query("select  fidelite,lecteur.idlecteur, nomlecteur,prenomlecteur,cin,nb_alertes,email,nb_prets,nb_prets_actuels,nb_ouv_max,abonnement,nb_abonn  from avertissement join lecteur on avertissement.idlecteur = lecteur.idlecteur join pret on avertissement.idpret = pret.idpret join ouvrage on pret.idouvrage = ouvrage.idouvrage where nb_alertes > 0 group by avertissement.idlecteur ");
       
     List<Lecteur> list = List<Lecteur>.generate(results.length, (index) {
         return Lecteur.define(
@@ -346,7 +346,7 @@ class Personnel {
     }
     }
     else{
-      print("Lecteur inexistant ou exclu");
+      print("Lecteur inexistant ou exclu ou il a dépassé le nb max ....");
     }}
     catch(e){
       print(e);

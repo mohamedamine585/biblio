@@ -200,12 +200,12 @@ class _AjouterPersonnelState extends State<AjouterPersonnel> {
                      grade = "officier";
                 if(mot_de_passe.text == Cmotdepasse.text) {
                 
-                 Personnel pers =  Personnel.define( nom.text, prenom.text, email.text, grade, int.parse(age.text),DateTime.now() , 0,Crypt.sha256(mot_de_passe.text).hash,adresse.text,int.parse(cin.text),0,null);
+                 if(RegExp(r'^[0-9]+$').hasMatch(cin.text)){Personnel pers =  Personnel.define( nom.text, prenom.text, email.text, grade, int.parse(age.text),DateTime.now() , 0,Crypt.sha256(mot_de_passe.text).hash,adresse.text,int.parse(cin.text),0,null);
                   bool added =await personnel.ajouter_personnel(mySqlConnection: mysqlConn,personnel:pers);
                   if(added){
 
                     Navigator.of(context).pop();
-                  }
+                  }}
                 }
               }, child: const Text("Ajouter Personnel"))
       

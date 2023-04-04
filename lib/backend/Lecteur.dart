@@ -56,8 +56,8 @@ class Lecteur{
        
 
     
-               final Results results = await mySqlConnection.query("select * from ouvrage where exists(select 1 from pret where ouvrage.nomouvrage = pret.nomouvrage and ouvrage.nomauteur = pret.nomauteur and nomlecteur = ? and prenomlecteur = ? and termine = 0)  order by date_entree desc;",[
-                nom,prenom
+               final Results results = await mySqlConnection.query("select * from ouvrage where exists(select 1 from pret where pret.idouvrage = ouvrage.idouvrage and pret.idlecteur = ? and termine = 0)  order by date_entree desc;",[
+                idlecteur
                ]);
           List<Ouvrage> list = List.generate(results.length, (index) {
              return Ouvrage.define(

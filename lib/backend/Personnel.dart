@@ -109,6 +109,7 @@ class Personnel {
  }
   Future<bool> supprimer_ouvrage({required MySqlConnection mySqlConnection , required Ouvrage ouvrage})async {
     try {
+      await mySqlConnection.query("delete from pret where idouvrage = ?",[ouvrage.idouvrage]);
       Results results = await mySqlConnection.query("delete from ouvrage where idouvrage = ? ",[
         ouvrage.idouvrage
       ]);
@@ -208,7 +209,7 @@ class Personnel {
     }
 
 
-    Future<List<Pret?>> get_prets({required MySqlConnection mySqlConnection})async{
+    Future<List<Pret>> get_prets({required MySqlConnection mySqlConnection})async{
      try {
        Results results =await mySqlConnection.query("select idpret,pret.idpersonnel,pret.idlecteur,pret.idouvrage,nomlecteur,prenomlecteur,nomouvrage,nomauteur,debut_pret,fin_pret,nompersonnel,prenompersonnel,termine from pret join ouvrage on ouvrage.idouvrage = pret.idouvrage  join lecteur on pret.idlecteur = lecteur.idlecteur join personnel on personnel.idpersonnel = pret.idpersonnel order by debut_pret desc;");
        if(results.isNotEmpty){
@@ -238,17 +239,16 @@ class Personnel {
   }
     
 
-    Future<void> update_lecteur({required MySqlConnection mySqlConnection , required int abonnement ,
-     required String nomlecteur , required  String prenomlecteur })async{
+    Future<void> update_lecteur({required MySqlConnection mySqlConnection , required int abonnement ,required String email,
+     required String nomlecteur , required  String prenomlecteur  , required int idlecteur})async{
       try {
          
-            Results results = await mySqlConnection.query("select idlecteur from lecteur where nomlecteur = ? and prenomlecteur =?", [
-              nomlecteur,prenomlecteur
+            Results results = await mySqlConnection.query("select idlecteur from lecteur where idlecteur = ?", [
+             idlecteur
             ]);
-            int idlect = results.elementAt(0)["idlecteur"];
             DateTime dateTime = DateTime.now().toUtc();
-            results=  await mySqlConnection.query("call injapp.renouveler_abonn(?,?,?)",[
-              abonnement,dateTime,idlect
+            results=  await mySqlConnection.query("call injapp.update_lect_info(?,?,?,?,?,?)",[
+              abonnement,dateTime,idlecteur,nomlecteur,prenomlecteur,email
             ]);
         print(results.affectedRows);
       } catch (e) {
@@ -260,13 +260,13 @@ class Personnel {
     try {
 
      await mySqlConnection.query("update lecteur set nb_prets_actuels = nb_prets_actuels - 1 where idlecteur = ?",[
-       pret. idpret
+       pret. idlecteur
       ]);
       await mySqlConnection.query("update lecteur set fidelite = fidelite + 1 where fidelite < 5 and nb_alertes < 3 and idlecteur = ? ",[
       pret.idlecteur
       ]);
      await  mySqlConnection.query("update ouvrage set nb_dispo = nb_dispo + 1  where idouvrage = ?",[
-       pret. nomouvrage,pret. auteur
+       pret. idouvrage
       ]);
      await mySqlConnection.query("update pret set termine = 1 where idpret = ?",[pret. idpret]);
     } catch (e) {

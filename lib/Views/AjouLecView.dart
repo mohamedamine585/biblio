@@ -157,11 +157,11 @@ class _AjouterLecteurState extends State<AjouterLecteur> {
                      abonnement = 3;
                    
                
-                final lecteur =Lecteur.define(null, nom.text, prenom.text, email.text,int.parse(cin.text), adresse.text, DateTime.now(),DateTime.now(), 0,0,0,1,abonnement*3,abonnement,1);
+               if(RegExp(r'^[0-9]+$').hasMatch(cin.text)){ final lecteur =Lecteur.define(null, nom.text, prenom.text, email.text,int.parse(cin.text), adresse.text, DateTime.now(),DateTime.now(), 0,0,0,1,abonnement*3,abonnement,1);
                 bool added= await personnel.add_lecteur(mySqlConnection: mySqlConnection,lecteur: lecteur);
                 if(added) {
                   Navigator.of(context).pop();
-                }
+                }}
               }, child: const Text("Ajouter lecteur"))
       
           ],

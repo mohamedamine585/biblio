@@ -166,9 +166,9 @@ class _InfolecteurpageState extends State<Infolecteurpage> {
                   if(ischecked3)
                      abonnement = 3;
                    
-                 await personnel.update_lecteur(mySqlConnection: mysqlconnection,nomlecteur: nom.text,prenomlecteur: prenom.text,abonnement: abonnement);
-               
-               Navigator.pop(context);
+                 await personnel.update_lecteur(mySqlConnection: mysqlconnection,nomlecteur: nom.text,prenomlecteur: prenom.text,abonnement: abonnement,idlecteur: lecteur.idlecteur ?? -1,email: email.text);
+            
+               Navigator.pop(context,true);
               }, child: const Text("Mise à jour du lecteur")),
                  Container(
               height:120,
@@ -202,12 +202,12 @@ class _InfolecteurpageState extends State<Infolecteurpage> {
                                        )) ),
 
                                     Container(
-                                      width: 400,
+                                      width: 700,
                                       child: Row(
                                         children: [
-                                          Text("Nombre de livres : ${ouvrage?.nb}" ), 
+                                          Text("Nombre de livres : ${ouvrage?.nb}" ,softWrap: true,), 
                                       const SizedBox(width: 20,),
-                                      Text("${lecteur.prenom} ${lecteur.nom} a preté ${count} livres "),
+                                      Text("${lecteur.prenom} ${lecteur.nom} a preté ${count} livres ",softWrap: true,),
                                       const SizedBox(width: 30,),
                                        Text("${ouvrage?.categorie ??  ' ' }"),
                                        

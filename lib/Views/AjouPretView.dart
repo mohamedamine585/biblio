@@ -103,6 +103,7 @@ class _AjouterPretState extends State<AjouterPret> {
              Container(
                width: 400,
               child: TextField(
+                 
                   controller: days,
                  
                 decoration: InputDecoration(
@@ -117,18 +118,23 @@ class _AjouterPretState extends State<AjouterPret> {
              
              
                 SizedBox(height: 40),
-              TextButton(onPressed: ()async{   
-                DateTime date_deb = DateTime.now().toUtc() , date_fin = DateTime.now().add(Duration(days: int.parse(days.text))).toUtc();
+              TextButton(onPressed: ()async{
+
+               if(RegExp(r'^[0-9]+$').hasMatch(days.text)) {DateTime date_deb = DateTime.now().toUtc() , date_fin = DateTime.now().add(Duration(days: int.parse(days.text))).toUtc();
                 Pret? pret = Pret.define(null,null,null,null, nomlecteur.text,  prenomlecteur.text, nomouvrage.text,  nomauteur.text,date_deb,date_fin,personnel.nom,personnel.prenom,0);
                 bool added =   await personnel.ajouter_pret(mySqlConnection: mySqlConnection,pret: pret);     
                 if(added) {
                   Navigator.of(context).pop();
-                }
+                }}
               }, child: const Text("Ajouter Pret"))
       
           ],
         ),
       ) ,
     );
+    
+  }
+  bool daystest(String s){
+     return RegExp(r'^[0-9]+$').hasMatch(s);
   }
 }

@@ -14,8 +14,7 @@ class Ouvragepage extends StatefulWidget {
 class _OuvragepageState extends State<Ouvragepage> {
   bool dispofiltre = false ,pretesfiltre = false ; 
   List<Ouvrage>? Ouvrages = [];
-  List<Ouvrage> Ouvs = [] , temp = [];
-   
+   String ?q ;
   @override
   late final TextEditingController query ;
   @override
@@ -30,6 +29,9 @@ class _OuvragepageState extends State<Ouvragepage> {
   }
   @override
   Widget build(BuildContext context) {
+      List<Ouvrage> Ouvs = Ouvrages?.where((element) => (element.nomAuteur.contains(q ?? '') || element.nomOuvrage.contains(q ?? ''))
+                      && ((dispofiltre && element.nb_dispo >0 ) || (pretesfiltre &&( element.nb - element.nb_dispo) > 0) || (!pretesfiltre && !dispofiltre))
+  ).toList() ?? [] ;
     final data =  ModalRoute.of(context)?.settings.arguments as List<dynamic>;
     final personnel = data[0] as Personnel ;
     final mysqlconn = data[1]as MySqlConnection ;
@@ -52,17 +54,9 @@ class _OuvragepageState extends State<Ouvragepage> {
                       
                       onChanged: (value) {
                         
-                       setState(() {
-                         Ouvs.clear();
-                     Ouvrages?.forEach((element) {
-                      if((element.nomAuteur.contains(value) || element.nomOuvrage.contains(value))
-                      && ((dispofiltre && element.nb_dispo >0 ) || (pretesfiltre &&( element.nb - element.nb_dispo) > 0) || (!pretesfiltre && !dispofiltre)) )
-                       {
-                        
-                        Ouvs.add(element);
-                       } });
-                         
-                       });
+                      setState(() {
+                        q = value;
+                      });
                      
                       },
                       controller: query,
@@ -87,14 +81,7 @@ class _OuvragepageState extends State<Ouvragepage> {
                 Checkbox(value: dispofiltre, onChanged: (disp){
                 setState(() {
                       dispofiltre = disp!;
-                      if(dispofiltre){
-                        temp = Ouvs ;
-                  Ouvs = Ouvs.where((element) => element.nb_dispo>0).toList();
-                      }
-                      else{
-                        
-                        Ouvs = temp;
-                      }
+                   
                       if(pretesfiltre)
                       {
                         pretesfiltre = !pretesfiltre;
@@ -106,17 +93,7 @@ class _OuvragepageState extends State<Ouvragepage> {
                 Checkbox(value: pretesfiltre, onChanged: (pret){
                setState(() {
                 pretesfiltre = pret! ;
-                if(pretesfiltre){
-                  Ouvs = temp;
-                                    print(temp.length);
-
-                  Ouvs = Ouvs.where((element) => (element.nb - element.nb_dispo)>0).toList();
-               
-                }else{
-                  print(temp.length);
-                  Ouvs = temp;
-
-                } if(dispofiltre){
+                if(dispofiltre){
               
                   dispofiltre = !dispofiltre;
                 }
@@ -180,7 +157,9 @@ class _OuvragepageState extends State<Ouvragepage> {
                                    TextButton(onPressed: ()async{
                                     final deleted = await personnel.supprimer_ouvrage(mySqlConnection: mysqlconn, ouvrage: Ouvs.elementAt(index));
                                     if(deleted){
-                                      Navigator.of(context).pop();
+                                      setState(() {
+                                         query.text = 'a';
+                                      });
                                     }
                                    }, child: const Text("supprimer l'ouvrage"))
                                   ],

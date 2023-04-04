@@ -48,12 +48,8 @@ class _LecteurpageState extends State<Lecteurpage> {
               onChanged: (value) {
                 setState(() {
                   lecs.clear();
-                  Lecteurs?.forEach((element) { 
-                    if(element.prenom.toLowerCase().contains(value)  || (element.nom.toLowerCase().contains(value)) 
-                  || element.prenom.toUpperCase().contains(value)  || (element.nom.toUpperCase().contains(value) ))
-                   lecs.add(element);
-                  
-                  }); 
+                  lecs = Lecteurs?.where((element) => element.prenom.toLowerCase().contains(value)  || (element.nom.toLowerCase().contains(value)) 
+                  || element.prenom.toUpperCase().contains(value)  || (element.nom.toUpperCase().contains(value) )).toList() ?? [];
                 });
               },
               controller: query,
@@ -89,8 +85,9 @@ class _LecteurpageState extends State<Lecteurpage> {
                         title:
                           Card(child: 
                           InkWell(
-                            onTap: (){
-                              Navigator.of(context).pushNamed( Infopage,arguments: [mysqlconn,lecs.elementAt(index),personnel]);
+                            onTap: ()async{
+                        await  Navigator.of(context).pushNamed( Infopage,arguments: [mysqlconn,lecs.elementAt(index),personnel]);
+
                             },
                             child: Container(
                               height: 50,

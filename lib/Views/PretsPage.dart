@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/backend/Personnel.dart';
 import 'package:flutter_application_1/backend/Pret.dart';
@@ -34,8 +35,7 @@ class _PretsPageState extends State<PretsPage> {
       final data =  ModalRoute.of(context)?.settings.arguments as List<dynamic>;
     final personnel = data[0] as Personnel ;
     final mysqlconn = data[1]as MySqlConnection ;
-    P = Prets.where((element) => (element!.nompersonnel.contains(s)  || (element.prenompersonnel.contains(s)) 
-                        || element.nomouvrage.contains(s)  || (element.auteur.contains(s) || (element.nomlecteur.contains(s)) ||(element.prenomlecteur.contains(s)) )) && (!actuelfiltre || (element.termine == 0))).toList();
+    int able_to_remove ;
     return  Scaffold(
       appBar: AppBar(
         title:const Center(child: Text("Prets")),
@@ -96,8 +96,10 @@ class _PretsPageState extends State<PretsPage> {
                 future: personnel.get_prets(mySqlConnection: mysqlconn),
                 builder: (context, snapshot) {
                    Prets = snapshot.data ?? []  ;
-
+                     P = Prets.where((element) => (element!.nompersonnel.contains(s)  || (element.prenompersonnel.contains(s)) 
+                        || element.nomouvrage.contains(s)  || (element.auteur.contains(s) || (element.nomlecteur.contains(s)) ||(element.prenomlecteur.contains(s)) )) && (!actuelfiltre || (element.termine == 0))).toList();
                   return ListView.builder(
+                    key: Key("listv"),
                       itemCount: P.length,
                       itemBuilder: (context,index){
                           int temps_pret_restant;
@@ -107,7 +109,7 @@ class _PretsPageState extends State<PretsPage> {
                       }catch(e){
                          temps_pret_restant = 0 ;
                       }
-                      int able_to_remove = P.elementAt(index)?.termine ?? 0;
+                       able_to_remove = P.elementAt(index)?.termine ?? 0;
                       return ListTile(
                       
                         title:
@@ -138,13 +140,14 @@ class _PretsPageState extends State<PretsPage> {
                                     const    SizedBox(width: 20,),
 
                                     able_to_remove == 0 ? TextButton(onPressed: ()async{
-
-                                         await personnel.delete_prets(mySqlConnection: mysqlconn,pret: P.elementAt(index)!);
-                                                                                  
-                                              setState(() {  
-                                             build(context);
-                                             
+                                     
+                                      await personnel.delete_prets(mySqlConnection: mysqlconn,pret: P.elementAt(index)!);
+                                     setState(() {   
+                                          able_to_remove = 1 ;
                                            });
+                                       
+                                                                                  
+                                            
 
                                       
                                            

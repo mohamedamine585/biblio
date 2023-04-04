@@ -108,6 +108,8 @@ class Personnel {
  }
   Future<bool> supprimer_ouvrage({required MySqlConnection mySqlConnection , required Ouvrage ouvrage})async {
     try {
+      
+     await mySqlConnection.query("delete from avertissement where idpret in (select idpret from pret where idouvrage = ?);",[ouvrage.idouvrage]);
       await mySqlConnection.query("delete from pret where idouvrage = ?",[ouvrage.idouvrage]);
       Results results = await mySqlConnection.query("delete from ouvrage where idouvrage = ? ",[
         ouvrage.idouvrage
@@ -210,7 +212,7 @@ class Personnel {
 
     Future<List<Pret>> get_prets({required MySqlConnection mySqlConnection})async{
      try {
-       Results results =await mySqlConnection.query("select idpret,pret.idpersonnel,pret.idlecteur,pret.idouvrage,nomlecteur,prenomlecteur,nomouvrage,nomauteur,debut_pret,fin_pret,nompersonnel,prenompersonnel,termine from pret join ouvrage on ouvrage.idouvrage = pret.idouvrage  join lecteur on pret.idlecteur = lecteur.idlecteur join personnel on personnel.idpersonnel = pret.idpersonnel order by debut_pret desc;");
+       Results results =await mySqlConnection.query("select idpret,pret.idpersonnel,pret.idlecteur,pret.idouvrage,nomlecteur,prenomlecteur,nomouvrage,nomauteur,debut_pret,fin_pret,nompersonnel,prenompersonnel,termine from pret join ouvrage on ouvrage.idouvrage = pret.idouvrage  join lecteur on pret.idlecteur = lecteur.idlecteur join personnel on personnel.idpersonnel = pret.idpersonnel order by idpret desc;");
        if(results.isNotEmpty){
         return List.generate(results.length, (index){
          return  Pret.define(

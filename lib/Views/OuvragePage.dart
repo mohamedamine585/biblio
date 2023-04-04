@@ -29,9 +29,7 @@ class _OuvragepageState extends State<Ouvragepage> {
   }
   @override
   Widget build(BuildContext context) {
-      List<Ouvrage> Ouvs = Ouvrages?.where((element) => (element.nomAuteur.contains(q ?? '') || element.nomOuvrage.contains(q ?? ''))
-                      && ((dispofiltre && element.nb_dispo >0 ) || (pretesfiltre &&( element.nb - element.nb_dispo) > 0) || (!pretesfiltre && !dispofiltre))
-  ).toList() ?? [] ;
+      List<Ouvrage> Ouvs;
     final data =  ModalRoute.of(context)?.settings.arguments as List<dynamic>;
     final personnel = data[0] as Personnel ;
     final mysqlconn = data[1]as MySqlConnection ;
@@ -109,6 +107,9 @@ class _OuvragepageState extends State<Ouvragepage> {
                 future: personnel.get_Ouvrages(mySqlConnection: mysqlconn),
                 builder: (context, snapshot) {
                    Ouvrages = snapshot.data  ;
+                   Ouvs = Ouvrages?.where((element) => (element.nomAuteur.contains(q ?? '') || element.nomOuvrage.contains(q ?? ''))
+                      && ((dispofiltre && element.nb_dispo >0 ) || (pretesfiltre &&( element.nb - element.nb_dispo) > 0) || (!pretesfiltre && !dispofiltre))
+  ).toList() ?? [] ;
                   return ListView.builder(
                       itemCount: Ouvs.length,
                       itemBuilder: (context,index){
@@ -157,7 +158,9 @@ class _OuvragepageState extends State<Ouvragepage> {
                                    TextButton(onPressed: ()async{
                                     final deleted = await personnel.supprimer_ouvrage(mySqlConnection: mysqlconn, ouvrage: Ouvs.elementAt(index));
                                     if(deleted){
-                                     Navigator.of(context).pop();
+                                     setState(() {
+                                       Ouvs.remove(Ouvs.elementAt(index));
+                                     });
                                     }
                                    }, child: const Text("supprimer l'ouvrage"))
                                   ],

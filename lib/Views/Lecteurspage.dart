@@ -16,7 +16,6 @@ class Lecteurpage extends StatefulWidget {
 
 class _LecteurpageState extends State<Lecteurpage> {
   List<Lecteur>? Lecteurs = [];
-  List<Lecteur> lecs = [];
   @override
   late final TextEditingController query ;
   @override
@@ -33,7 +32,11 @@ class _LecteurpageState extends State<Lecteurpage> {
   Widget build(BuildContext context) {
   final data =  ModalRoute.of(context)?.settings.arguments as List<dynamic>;
     final personnel = data[0] as Personnel ;
-    final mysqlconn = data[1]as MySqlConnection ;    return  Scaffold(
+    final mysqlconn = data[1]as MySqlConnection ;    
+      List<Lecteur> lecs = [];
+      String s = "";
+
+    return  Scaffold(
       appBar: AppBar(
         title:const Center(child: Text("Lecteurs")),
       ),
@@ -47,9 +50,8 @@ class _LecteurpageState extends State<Lecteurpage> {
               
               onChanged: (value) {
                 setState(() {
-                  lecs.clear();
-                  lecs = Lecteurs?.where((element) => element.prenom.toLowerCase().contains(value)  || (element.nom.toLowerCase().contains(value)) 
-                  || element.prenom.toUpperCase().contains(value)  || (element.nom.toUpperCase().contains(value) )).toList() ?? [];
+                 s  = value;
+                  
                 });
               },
               controller: query,
@@ -74,7 +76,8 @@ class _LecteurpageState extends State<Lecteurpage> {
                 future: personnel.get_lecteurs(mySqlConnection: mysqlconn),
                 builder: (context, snapshot) {
                    Lecteurs = snapshot.data  ;
-
+lecs = Lecteurs?.where((element) => element.prenom.toLowerCase().contains(s)  || (element.nom.toLowerCase().contains(s)) 
+                  || element.prenom.toUpperCase().contains(s)  || (element.nom.toUpperCase().contains(s) )).toList() ?? [];
                   return ListView.builder(
                       itemCount: lecs.length,
                       itemBuilder: (context,index){
@@ -125,7 +128,9 @@ class _LecteurpageState extends State<Lecteurpage> {
                                 TextButton(onPressed: ()async{
                                   final deleted = await personnel.supprimer_lecteur(mySqlConnection: mysqlconn, lecteur: lecs.elementAt(index));
                                   if(deleted){
-                                    Navigator.of(context).pop();
+                                   setState(() {
+                                     lecs.remove(lecs.elementAt(index));
+                                   });
                                   }
                                 }, child: const Text("Supprimer le lecteur"))
                                   ],

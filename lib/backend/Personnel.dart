@@ -257,8 +257,8 @@ class Personnel {
 
     Future<void> delete_prets({required MySqlConnection mySqlConnection , required Pret pret })async{
     try {
-
-     await mySqlConnection.query("update lecteur set nb_prets_actuels = nb_prets_actuels - 1 where idlecteur = ?",[
+    Results results = await mySqlConnection.query("update pret set termine = 1 where idpret = ? and termine = 0",[pret. idpret]);
+    if(results.affectedRows != 0){ await mySqlConnection.query("update lecteur set nb_prets_actuels = nb_prets_actuels - 1 where idlecteur = ?",[
        pret. idlecteur
       ]);
       await mySqlConnection.query("update lecteur set fidelite = fidelite + 1 where fidelite < 5 and nb_alertes < 3 and idlecteur = ? ",[
@@ -266,8 +266,8 @@ class Personnel {
       ]);
      await  mySqlConnection.query("update ouvrage set nb_dispo = nb_dispo + 1  where idouvrage = ?",[
        pret. idouvrage
-      ]);
-     await mySqlConnection.query("update pret set termine = 1 where idpret = ?",[pret. idpret]);
+      ]);}
+     
     } catch (e) {
       print(e);
     }}

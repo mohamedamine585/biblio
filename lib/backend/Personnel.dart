@@ -316,7 +316,7 @@ class Personnel {
        required Pret pret
     }
   )async{
-    try{  Results query_on_lecteur = await mySqlConnection.query("select idlecteur,abonnement from lecteur where nomlecteur = ? and prenomlecteur = ? and nb_ouv_max > nb_prets_actuels and nb_alertes < 3 and date_abonn > ?",[
+    try{  Results query_on_lecteur = await mySqlConnection.query("select idlecteur,abonnement from lecteur where nomlecteur = ? and prenomlecteur = ? and nb_ouv_max > nb_prets_actuels and nb_alertes < 3 and date_abb > ?",[
      pret. nomlecteur ,pret. prenomlecteur,DateTime.now().toUtc().subtract(Duration(days: 90))
     ]);
    if(query_on_lecteur.isNotEmpty){

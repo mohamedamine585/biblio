@@ -259,7 +259,7 @@ class Personnel {
 
     Future<void> delete_prets({required MySqlConnection mySqlConnection , required Pret pret })async{
     try {
-    Results results = await mySqlConnection.query("update pret set termine = 1 where idpret = ? and termine = 0",[pret. idpret]);
+    Results results = await mySqlConnection.query("update pret set termine = 1 , fin_pret = ? where idpret = ? and termine = 0",[DateTime.now().toUtc(),pret. idpret]);
     if(results.affectedRows != 0){ await mySqlConnection.query("update lecteur set nb_prets_actuels = nb_prets_actuels - 1 where idlecteur = ?",[
        pret. idlecteur
       ]);
@@ -316,8 +316,8 @@ class Personnel {
        required Pret pret
     }
   )async{
-    try{  Results query_on_lecteur = await mySqlConnection.query("select idlecteur,abonnement from lecteur where nomlecteur = ? and prenomlecteur = ? and nb_ouv_max > nb_prets_actuels and nb_alertes < 3",[
-     pret. nomlecteur ,pret. prenomlecteur
+    try{  Results query_on_lecteur = await mySqlConnection.query("select idlecteur,abonnement from lecteur where nomlecteur = ? and prenomlecteur = ? and nb_ouv_max > nb_prets_actuels and nb_alertes < 3 and date_abonn > ?",[
+     pret. nomlecteur ,pret. prenomlecteur,DateTime.now().toUtc().subtract(Duration(days: 90))
     ]);
    if(query_on_lecteur.isNotEmpty){
      if( query_on_lecteur.elementAt(0)["abonnement"] < DateTimeRange(start:pret. debut_pret, end:pret. fin_pret).duration.inDays / 30 ){
@@ -348,7 +348,7 @@ class Personnel {
     }
     }
     else{
-      print("Lecteur inexistant ou exclu ou il a dépassé le nb max ....");
+      print("Lecteur inexistant ou exclu ou il a dépassé le nb max ou son abonnement expiré ....");
     }}
     catch(e){
       print(e);

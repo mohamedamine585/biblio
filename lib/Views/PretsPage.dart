@@ -15,7 +15,7 @@ class PretsPage extends StatefulWidget {
 
 class _PretsPageState extends State<PretsPage> {
   List<Pret?> Prets = [];
-  List<Pret?> P = [],Ptemp = [];
+  List<Pret?> P = [];
   bool actuelfiltre = false ;
    String s = "";
   @override
@@ -32,9 +32,12 @@ class _PretsPageState extends State<PretsPage> {
   }
   @override
   Widget build(BuildContext context) {
+
       final data =  ModalRoute.of(context)?.settings.arguments as List<dynamic>;
     final personnel = data[0] as Personnel ;
     final mysqlconn = data[1]as MySqlConnection ;
+                         P = Prets.where((element) => (element!.nompersonnel.contains(s)  || (element.prenompersonnel.contains(s)) 
+                        || element.nomouvrage.contains(s)  || (element.auteur.contains(s) || (element.nomlecteur.contains(s)) ||(element.prenomlecteur.contains(s)) )) && (!actuelfiltre || (element.termine == 0))).toList();
     int able_to_remove ;
     return  Scaffold(
       appBar: AppBar(

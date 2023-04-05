@@ -15,8 +15,9 @@ class LecteurAverti extends StatefulWidget {
 }
 
 class _LecteurAvertiState extends State<LecteurAverti> {
-  List<Lecteur>? Lecteurs = [];
+  List<Lecteur> Lecteurs = [];
   List<Lecteur> lecs = [];
+  String ?s; 
   @override
   late final TextEditingController query ;
   @override
@@ -33,7 +34,9 @@ class _LecteurAvertiState extends State<LecteurAverti> {
   Widget build(BuildContext context) {
   final data =  ModalRoute.of(context)?.settings.arguments as List<dynamic>;
     final personnel = data[0] as Personnel ;
-    final mysqlconn = data[1]as MySqlConnection ;    return  Scaffold(
+    final mysqlconn = data[1]as MySqlConnection ; 
+    List<Lecteur?> lecs ; 
+      return  Scaffold(
       appBar: AppBar(
         title:const Center(child: Text("Lecteurs Avertis")),
       ),
@@ -47,13 +50,7 @@ class _LecteurAvertiState extends State<LecteurAverti> {
               
               onChanged: (value) {
                 setState(() {
-                  lecs.clear();
-                  Lecteurs?.forEach((element) { 
-                    if(element.prenom.toLowerCase().contains(value)  || (element.nom.toLowerCase().contains(value)) 
-                  || element.prenom.toUpperCase().contains(value)  || (element.nom.toUpperCase().contains(value) ))
-                   lecs.add(element);
-                  
-                  }); 
+                  s = value;
                 });
               },
               controller: query,
@@ -77,8 +74,9 @@ class _LecteurAvertiState extends State<LecteurAverti> {
               child: FutureBuilder(
                 future: personnel.get_lecteurs_avertis(mySqlConnection: mysqlconn),
                 builder: (context, snapshot) {
-                   Lecteurs = snapshot.data  ;
-
+                   Lecteurs = snapshot.data ?? [] ;
+                   lecs = Lecteurs.where((element) => element.prenom.toLowerCase().contains(s ?? "")  || (element.nom.toLowerCase().contains(s ?? '')) 
+                  || element.prenom.toUpperCase().contains(s ?? "")  || (element.nom.toUpperCase().contains(s ?? "") )).toList() ;
                   return ListView.builder(
                       itemCount: lecs.length,
                       itemBuilder: (context,index){
@@ -101,16 +99,16 @@ class _LecteurAvertiState extends State<LecteurAverti> {
                                     SingleChildScrollView(
                                       child: Container(
                                         width: 400,
-                                        child: Text("${lecs.elementAt(index).nom} ${lecs.elementAt(index).prenom}")),
+                                        child: Text("${lecs.elementAt(index)?.nom} ${lecs.elementAt(index)?.prenom}")),
                                     ),
-                                    Text("CIN : ${lecs.elementAt(index).Cin}    "),
+                                    Text("CIN : ${lecs.elementAt(index)?.Cin}    "),
                                     
                                     SizedBox(width: 20,),
-                                    Text("nombres d'alertes : ${lecs.elementAt(index).nb_alertes}",style: TextStyle(fontWeight: FontWeight.bold)),
+                                    Text("nombres d'alertes : ${lecs.elementAt(index)?.nb_alertes}",style: TextStyle(fontWeight: FontWeight.bold)),
                                     SizedBox(width: 50,),
                                     RatingBar.builder(
                                       itemSize: 20,
-                                 initialRating: (lecs.elementAt(index).fidelite).toDouble(),
+                                 initialRating: (lecs.elementAt(index)?.fidelite)?.toDouble() ?? 0,
                                  direction: Axis.horizontal,
                                  allowHalfRating: true,
                                  itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
@@ -124,7 +122,7 @@ class _LecteurAvertiState extends State<LecteurAverti> {
                                 const SizedBox(width: 15,),
                                 TextButton(onPressed: ()async{
                                   
-                                  final deleted = await personnel.supprimer_lecteur(mySqlConnection: mysqlconn, lecteur: lecs.elementAt(index));
+                                  final deleted = await personnel.supprimer_lecteur(mySqlConnection: mysqlconn, lecteur: lecs.elementAt(index)!);
                                   if(deleted){
                                     setState(() {
                                       Navigator.of(context).pop();

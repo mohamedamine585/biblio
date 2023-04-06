@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/Views/showdialog.dart';
 import 'package:flutter_application_1/backend/Lecteur.dart';
 import 'package:flutter_application_1/backend/Personnel.dart';
 import 'package:mysql1/mysql1.dart';
@@ -161,7 +162,9 @@ class _AjouterLecteurState extends State<AjouterLecteur> {
                 bool added= await personnel.add_lecteur(mySqlConnection: mySqlConnection,lecteur: lecteur);
                 if(added) {
                   Navigator.of(context).pop();
-                }}
+                }}else{
+                  sd("Cin Format Not Accepted", context);
+                }
               }, child: const Text("Ajouter lecteur"))
       
           ],

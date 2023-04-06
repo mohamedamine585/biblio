@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Consts.dart';
+import 'package:flutter_application_1/Views/showdialog.dart';
 
 import 'package:flutter_application_1/backend/MysqlDBConnection.dart';
 import 'package:flutter_application_1/backend/Personnel.dart';
@@ -92,7 +93,7 @@ class _AuthentificationViewState extends State<AuthentificationView> {
                     Navigator.of(context).pushNamedAndRemoveUntil(Homepage, (route) => false,arguments: [user,snapshot.data]);
                   }
                   else{
-                    print("User not found !");
+                   sd("Wrong Crendentials !", context);
                   }
               }, child: const Text("Authentifier",style: TextStyle(color: Colors.white),))
                  

@@ -1,5 +1,6 @@
 import 'package:crypt/crypt.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/Views/showdialog.dart';
 import 'package:flutter_application_1/backend/Personnel.dart';
 import 'package:mysql1/mysql1.dart';
 
@@ -198,14 +199,23 @@ class _AjouterPersonnelState extends State<AjouterPersonnel> {
                      grade = "vice president";
                   if(ischecked3)
                      grade = "officier";
-                if(mot_de_passe.text == Cmotdepasse.text) {
-                
-                 if(RegExp(r'^[0-9]+$').hasMatch(cin.text)){Personnel pers =  Personnel.define( nom.text, prenom.text, email.text, grade, int.parse(age.text),DateTime.now() , 0,Crypt.sha256(mot_de_passe.text).hash,adresse.text,int.parse(cin.text),0,null);
+                if(mot_de_passe.text == Cmotdepasse.text && mot_de_passe.text != "") {
+                                    
+
+                 if(RegExp(r'^[0-9]+$').hasMatch(cin.text)){
+                  Personnel pers =  Personnel.define( nom.text, prenom.text, email.text, grade, int.parse(age.text),DateTime.now() , 0,Crypt.sha256(mot_de_passe.text).hash,adresse.text,int.parse(cin.text),0,null);
                   bool added =await personnel.ajouter_personnel(mySqlConnection: mysqlConn,personnel:pers);
                   if(added){
-
+                    
                     Navigator.of(context).pop();
-                  }}
+                  }else{
+                 sd("Echec d'ajout", context);
+                  }}else{
+                  sd("Format de cin incompatible", context);
+
+                  }
+                }else{
+                  sd("Confirm password please", context);
                 }
               }, child: const Text("Ajouter Personnel"))
       

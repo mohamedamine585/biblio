@@ -3,6 +3,7 @@
 import 'dart:ffi';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/Views/showdialog.dart';
 import 'package:flutter_application_1/backend/Ouvrage.dart';
 import 'package:flutter_application_1/backend/Personnel.dart';
 import 'package:mysql1/mysql1.dart';
@@ -113,9 +114,12 @@ class _AjouterOuvrageState extends State<AjouterOuvrage> {
                const SizedBox(height: 40),
               TextButton(onPressed: ()async{    
                 Ouvrage ouvrage =Ouvrage.define(null,nom.text, auteur.text, categorie.text , int.parse(nb.text), int.parse(nb.text), 0,double.parse(prix.text), DateTime.now().toUtc())        ;
-              final added = await  personnel.add_Ouvrage(mySqlConnection: mySqlConnection, ouvrage: ouvrage);
+              final added = await  personnel.add_Ouvrage(mySqlConnection: mySqlConnection, ouvrage: ouvrage,context: context);
                if(added) {
                  Navigator.of(context).pop();
+               }else{
+                  sd("L'ouvrage déjà existe !",context);
+                
                }
               }, child: const Text("Ajouter ouvrage"))
       

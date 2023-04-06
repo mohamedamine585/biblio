@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/Views/showdialog.dart';
 import 'package:flutter_application_1/backend/Lecteur.dart';
 import 'package:flutter_application_1/backend/Ouvrage.dart';
 import 'package:mysql1/mysql1.dart';
@@ -313,7 +314,8 @@ class Personnel {
      Future<bool> ajouter_pret(
     {
       required MySqlConnection mySqlConnection ,
-       required Pret pret
+       required Pret pret , 
+       required BuildContext context
     }
   )async{
     try{  Results query_on_lecteur = await mySqlConnection.query("select idlecteur,abonnement from lecteur where nomlecteur = ? and prenomlecteur = ? and nb_ouv_max > nb_prets_actuels and nb_alertes < 3 and date_abb > ?",[
@@ -321,7 +323,7 @@ class Personnel {
     ]);
    if(query_on_lecteur.isNotEmpty){
      if( query_on_lecteur.elementAt(0)["abonnement"] < DateTimeRange(start:pret. debut_pret, end:pret. fin_pret).duration.inDays / 30 ){
-      print("Ce lecteur ne peut pas ....");
+      sd("L'abonnement de ce lecteur ne lui permet pas de preter ce livre pour toute cette période", context);
     }else{
       Results query_on_ouvrage = await mySqlConnection.query("select idouvrage,nb_dispo from ouvrage where nomouvrage= ? and nomauteur = ?",[
        pret. nomouvrage,pret. auteur
@@ -343,12 +345,12 @@ class Personnel {
          return true;}
       }
       else {
-        print("Ouvrage indisponible !");
+       sd("Ouvrage indisponible !", context);
       }
     }
     }
     else{
-      print("Lecteur inexistant ou exclu ou il a dépassé le nb max ou son abonnement expiré ....");
+      sd("Lecteur inexistant ou exclu ou il a dépassé le nb max ou son abonnement expiré ....", context);
     }}
     catch(e){
       print(e);
@@ -361,7 +363,7 @@ class Personnel {
   
 
 
-    Future<bool>  add_Ouvrage({required MySqlConnection mySqlConnection ,required Ouvrage ouvrage
+    Future<bool>  add_Ouvrage({required MySqlConnection mySqlConnection ,required Ouvrage ouvrage ,required BuildContext context
  })async{
      try {
       Results results ;
@@ -373,7 +375,7 @@ class Personnel {
          ouvrage. nomOuvrage,ouvrage. nomAuteur,ouvrage.nb,ouvrage. nb,0,ouvrage.categorie,ouvrage.date_entree,ouvrage.prix
         ]);}
         else{
-          print("Ouvrage deja existe");
+         return false;
         }
 
         

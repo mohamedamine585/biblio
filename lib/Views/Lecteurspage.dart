@@ -16,6 +16,7 @@ class Lecteurpage extends StatefulWidget {
 
 class _LecteurpageState extends State<Lecteurpage> {
   List<Lecteur>? Lecteurs = [];
+  String ?s;
   @override
   late final TextEditingController query ;
   @override
@@ -34,7 +35,6 @@ class _LecteurpageState extends State<Lecteurpage> {
     final personnel = data[0] as Personnel ;
     final mysqlconn = data[1]as MySqlConnection ;    
       List<Lecteur> lecs = [];
-      String s = "";
 
     return  Scaffold(
       appBar: AppBar(
@@ -76,8 +76,8 @@ class _LecteurpageState extends State<Lecteurpage> {
                 future: personnel.get_lecteurs(mySqlConnection: mysqlconn),
                 builder: (context, snapshot) {
                    Lecteurs = snapshot.data  ;
-lecs = Lecteurs?.where((element) => element.prenom.toLowerCase().contains(s)  || (element.nom.toLowerCase().contains(s)) 
-                  || element.prenom.toUpperCase().contains(s)  || (element.nom.toUpperCase().contains(s) )).toList() ?? [];
+lecs = Lecteurs?.where((element) => element.prenom.toLowerCase().contains(s ?? "")  || (element.nom.toLowerCase().contains(s ?? "")) 
+                  || element.prenom.toUpperCase().contains(s ?? "")  || (element.nom.toUpperCase().contains(s ?? "") )).toList() ?? [];
                   return ListView.builder(
                       itemCount: lecs.length,
                       itemBuilder: (context,index){

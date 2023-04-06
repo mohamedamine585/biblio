@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Consts.dart';
+import 'package:flutter_application_1/Views/showdialog.dart';
 import 'package:flutter_application_1/backend/MysqlDBConnection.dart';
 import 'package:flutter_application_1/backend/Personnel.dart';
 import 'package:mysql1/mysql1.dart';
@@ -28,10 +29,11 @@ class _MyHomePageState extends State<MyHomePage> {
               IconButton(onPressed: (){
                 if(user.grade == 'president') {
                   Navigator.of(context).pushNamed(AjouPersView,arguments:[user, mysqlconn]);
+                }else{
+                  sd("Vous etes interdit d'ajouter des personnels", context);
                 }
               }, icon: Icon(Icons.person_add)),
               SizedBox(width: 10,),
-              IconButton(onPressed: (){},icon: Icon(Icons.person_remove_alt_1)),
               SizedBox(width: 10,),
               IconButton(onPressed: ()async{
                    await GestP.logout(mysqlconn);

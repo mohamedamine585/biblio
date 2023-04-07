@@ -18,7 +18,8 @@ class Personnel {
   
   Personnel();
   Personnel.define( this.nom, this.prenom, this.email, this.grade, this.age, this.date_entree, this.prets_effectues, this.mot_de_passe, this.addresse,this.cin, this.minutes_en_service,this.idpersonnel);
- 
+  Personnel.forstats(this.nom,this.prenom,this.minutes_en_service);
+  
   Future<Personnel?> Authentifier({
     required MySqlConnection mySqlConnection,
     required String nom,required String prenom , required String mot_de_passe
@@ -53,6 +54,8 @@ class Personnel {
       return null;
     }
   }
+  
+  
   Future<void> logout(MySqlConnection mySqlConnection )async{
     try {
        DateTime derniere_activite ;
@@ -67,6 +70,8 @@ class Personnel {
       print(e);
     }
   }
+  
+  
   Future<bool> ajouter_personnel(
     
    {required MySqlConnection mySqlConnection ,
@@ -89,6 +94,8 @@ class Personnel {
      }
      return false;
   }
+   
+   
    Future<bool> add_lecteur(
   {required MySqlConnection mySqlConnection , required Lecteur lecteur
 
@@ -107,7 +114,9 @@ class Personnel {
     }
 
  }
-  Future<bool> supprimer_ouvrage({required MySqlConnection mySqlConnection , required Ouvrage ouvrage})async {
+
+
+ Future<bool> supprimer_ouvrage({required MySqlConnection mySqlConnection , required Ouvrage ouvrage})async {
     try {
       
      await mySqlConnection.query("delete from avertissement where idpret in (select idpret from pret where idouvrage = ?);",[ouvrage.idouvrage]);
@@ -357,11 +366,7 @@ class Personnel {
     }
     return false;
   }
-  
-  
-  
-  
-
+ 
 
     Future<bool>  add_Ouvrage({required MySqlConnection mySqlConnection ,required Ouvrage ouvrage ,required BuildContext context
  })async{
@@ -385,10 +390,108 @@ class Personnel {
        return false;
      }
   }
+
+  
+  
   Future<List<Ouvrage>?> get_Ouvrages({required MySqlConnection mySqlConnection})async{
      try {
     
                final Results results = await mySqlConnection.query("select * from ouvrage order by date_entree desc");
+          List<Ouvrage> list = List.generate(results.length, (index) {
+             return Ouvrage.define(
+                            results.elementAt(index)["idouvrage"],
+
+              results.elementAt(index)["nomouvrage"]
+             , results.elementAt(index)["nomauteur"]
+             , results.elementAt(index)["categorie"]
+             , results.elementAt(index)["nb"]
+             , results.elementAt(index)["nb_dispo"]
+             , results.elementAt(index)["nb_perdu"]
+             , results.elementAt(index)["prix"]
+                
+             , results.elementAt(index)["date_entree"]);
+          });
+
+          return list; 
+     } catch (e) {
+      print(e);
+       return null;
+     }
+  }
+
+Future<Set<dynamic>> get_stats({required MySqlConnection mySqlConnection})async{
+  return{await get_personnels(mySqlConnection: mySqlConnection) ,await get_10Ouvrages(mySqlConnection: mySqlConnection),await get_10lecteurs(mySqlConnection: mySqlConnection)};
+}
+
+Future<List<Lecteur>?> get_10lecteurs({required MySqlConnection mySqlConnection})async{
+      try {
+       
+      Results results =  await  mySqlConnection.query("select nomlecteur,prenomlecteur,nb_prets from lecteur");
+      
+    List<Lecteur> list = List<Lecteur>.generate(results.length, (index) {
+        return Lecteur.forstats(
+          results.elementAt(index)["nomlecteur"]
+        , results.elementAt(index)["prenomlecteur"],
+                 results.elementAt(index)["nb_prets"]
+
+);
+    
+     });
+     print(list);
+     print("object");
+     return list;
+      } catch (e) {
+        print(e);
+         return null;
+      }
+}
+
+
+  Future<List<Ouvrage>?> get_10Ouvrages({required MySqlConnection mySqlConnection})async{
+     try {
+    
+               final Results results = await mySqlConnection.query("select nomouvrage,nomauteur,( select count(idouvrage)  from pret where pret.idouvrage =ouvrage.idouvrage ) as count  from ouvrage order by count desc limit 10");
+          List<Ouvrage> list = List.generate(results.length, (index) {
+             return Ouvrage.forstats(
+
+              results.elementAt(index)["nomouvrage"]
+             , results.elementAt(index)["nomauteur"]
+                
+             , results.elementAt(index)["count"],
+              
+                );
+          });
+
+          return list; 
+     } catch (e) {
+      print(e);
+       return null;
+     }
+  }
+  
+  Future<List<Personnel>> get_personnels({required MySqlConnection mySqlConnection})async{
+try {
+  Results results = await mySqlConnection.query("select nompersonnel,prenompersonnel,minutes_en_service from personnel");
+ List<Personnel> list =  List<Personnel>.generate(results.length, (index){
+    return Personnel.forstats(
+      results.elementAt(index)["nompersonnel"]
+      ,  results.elementAt(index)["prenompersonnel"], 
+       results.elementAt(index)["minutes_en_service"]);
+  });
+
+  return list ;
+} catch (e) {
+  
+}
+return [];
+  }
+  
+  Future<List<Ouvrage>?> get_Ouvrages_Mq_perdus({required MySqlConnection mySqlConnection})async{
+     try {
+    
+               final Results results = await mySqlConnection.query("select * from ouvrage where idouvrage in (select idouvrage from pret where fin_pret < ? and termine = 0) order by date_entree desc",[
+                DateTime.now().toUtc()
+               ]);
           List<Ouvrage> list = List.generate(results.length, (index) {
              return Ouvrage.define(
                             results.elementAt(index)["idouvrage"],

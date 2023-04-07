@@ -9,3 +9,5 @@ const AjouPretView = "AjouPretView";
 const PretPage = "PretPage";
 const Infopage = "Infopage";
 const PageLectAvertis = "PageLectAvertis";
+const OuvrageMqperpage = "OuvrageMqperd";
+const statsview = "statsview";

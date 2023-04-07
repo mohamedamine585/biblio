@@ -1,15 +1,17 @@
 import 'dart:ffi';
 
+import 'package:flutter/material.dart';
 import 'package:mysql1/mysql1.dart';
 
 class Ouvrage {
-  String nomOuvrage , nomAuteur ; 
-  String ?categorie ;
-  int? idouvrage;
-  int nb , nb_dispo , nb_perdu;
-  double prix  ;
-  DateTime date_entree ;
-  Ouvrage.define( this.idouvrage, this.nomOuvrage,this.nomAuteur,this.categorie,this.nb,this.nb_dispo,this.nb_perdu,this.prix,this.date_entree);
+ late String nomOuvrage , nomAuteur ; 
+  late  String ?categorie ;
+ late int? idouvrage;
+ late int nb , nb_dispo , nb_perdu ,prets_tot;
+  late double prix  ;
+  late DateTime date_entree ;
   
+  Ouvrage.define( this.idouvrage, this.nomOuvrage,this.nomAuteur,this.categorie,this.nb,this.nb_dispo,this.nb_perdu,this.prix,this.date_entree);
+  Ouvrage.forstats(this.nomOuvrage,this.nomAuteur,this.prets_tot);
 
 }

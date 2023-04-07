@@ -5,19 +5,19 @@ import 'package:mysql1/mysql1.dart';
 import 'Ouvrage.dart';
 
 class Lecteur{
-  String nom , prenom , email ;
-  String ? addresse ;
-  int? Cin,idlecteur; 
-  int nb_prets ,nb_prets_actuels , nb_alertes ,fidelite , nb_ouv_max , abonnement , nb_abonn ;
+ late String nom , prenom , email ;
+ late String ? addresse ;
+ late int? Cin,idlecteur; 
+ late int nb_prets ,nb_prets_actuels , nb_alertes ,fidelite , nb_ouv_max , abonnement , nb_abonn ;
    
-  DateTime? date_entree , date_abonnement ;
+late  DateTime? date_entree , date_abonnement ;
 
 
 
 
 
   Lecteur.define( this.idlecteur,this.nom,this.prenom,this.email,this.Cin,this.addresse,this.date_entree,this.date_abonnement,this.nb_prets,this.nb_prets_actuels,this.nb_alertes,this.fidelite,this.nb_ouv_max,this.abonnement,this.nb_abonn);
- 
+  Lecteur.forstats(this.nom,this.prenom,this.nb_prets);
  
 
  

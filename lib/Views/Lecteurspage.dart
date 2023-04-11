@@ -81,8 +81,12 @@ lecs = Lecteurs?.where((element) => element.prenom.toLowerCase().contains(s ?? "
                   return ListView.builder(
                       itemCount: lecs.length,
                       itemBuilder: (context,index){
-                      final temps_abonn_restant =30- DateTimeRange(start: lecs.elementAt(index).date_abonnement!, end: DateTime.now()).duration.inDays;
-                      
+                      int temps_abonn_restant = 0;
+                      try {
+                       temps_abonn_restant = 30- DateTimeRange(start: lecs.elementAt(index).date_abonnement ?? DateTime.now(), end: DateTime.now()).duration.inDays;
+                      } catch (e) {
+                        temps_abonn_restant =  30- DateTimeRange(start: lecs.elementAt(index).date_abonnement ?? DateTime.now(), end: DateTime.now().add(Duration(days: 1))).duration.inDays;
+                      }
                       return ListTile(
                       
                         title:

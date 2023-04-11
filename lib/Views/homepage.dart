@@ -13,10 +13,9 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  @override 
-  final mysqlconn = MysqlConn();
-  final GestP = Personnel();
+
   @override
+
   Widget build(BuildContext context) {
     final route_data = ModalRoute.of(context)?.settings.arguments as List<dynamic>;
     final user = route_data[0] as Personnel;
@@ -36,8 +35,8 @@ class _MyHomePageState extends State<MyHomePage> {
               SizedBox(width: 10,),
               SizedBox(width: 10,),
               IconButton(onPressed: ()async{
-                   await GestP.logout(mysqlconn);
-                   Navigator.of(context).pushNamedAndRemoveUntil(AuthenView, (route) => false);
+                   await user.logout(mysqlconn);
+                Navigator.of(context).pushNamedAndRemoveUntil(AuthenView, (route) => false);
               },icon:  Icon(Icons.logout),),
               
              ],

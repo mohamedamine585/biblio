@@ -7,6 +7,7 @@ import 'package:flutter/src/widgets/ticker_provider.dart';
 import 'package:flutter_application_1/backend/Ouvrage.dart';
 import 'package:flutter_application_1/backend/Personnel.dart';
 import 'package:mysql1/mysql1.dart';
+import 'package:pie_chart/pie_chart.dart';
 
 import '../backend/Lecteur.dart';
 
@@ -46,13 +47,13 @@ class _StatsViewState extends State<StatsView>
       body: FutureBuilder<Object>(
         future:personnel.get_stats(mySqlConnection: mysqlconn) ,
         builder: (context, snapshot) {
-         final data =   snapshot.data as Set<dynamic>;
+       if(snapshot.connectionState == ConnectionState.done) { final data =   snapshot.data as Set<dynamic>;
          final colors = [Color.fromRGBO(255, 0, 0, 1.0,),Color.fromRGBO(0, 0, 255, 1.0),Color.fromRGBO(255, 87, 34, 1.0),Color.fromRGBO(233, 30, 99, 1.0),Color.fromRGBO(233, 30, 99, 1.0),Color.fromRGBO(233, 30, 99, 1.0),Color.fromRGBO(76, 175, 80, 1.0)];
-          print(snapshot.data);
+          print(data.elementAt(3));
           final List<charts.Series<Personnel,String>> list1 = [
             charts.Series<Personnel,String>(id: "Activité de notre personnel"
             , data:data.elementAt(0) as  List<Personnel>
-            , domainFn: (Personnel pers,_)=>pers.nom + " " + pers.prenom
+            , domainFn: (Personnel pers,_)=>(pers.nom + " " + pers.prenom)
             , measureFn: (Personnel pers , _)=>pers.minutes_en_service,
             
             )
@@ -72,68 +73,107 @@ class _StatsViewState extends State<StatsView>
             )
           ];
           return SingleChildScrollView(
-            child: Column(
-              children: [
-                SingleChildScrollView(
-                  child: Row(
-                    children: [
-                     Column(
-                       children: [
-                         const Text("Activité de notre personnel ",style: TextStyle(fontSize: 20),),
-                      const SizedBox(height: 30,),
-                      Container(
-                        height: 500,
-                        width: 500,
-                        child: 
-                         charts.BarChart(
-
-                          list1,animate: true,animationDuration: Duration(seconds: 3),
-                       )
-                         
-                      ),
-                       ],
-                     ),
-                     
-                 SizedBox(width: 50,),
-                                     Column(
-                                       children: [
-                                         const Text("Top 10 Ouvrages demandés ",style: TextStyle(fontSize: 20),),
-                                                                     SizedBox(height: 30,),
-                
-                         Container(
-                        height: 500,
-                        width: 500,
-                        child: 
-                         charts.BarChart(list2,animate: true,animationDuration: Duration(seconds: 3),)
-                        
-                      ),   ],
-                                     ),
-                          SizedBox(width:40,),
+            child: Center(
+              child: Column(
+                children: [
+                  
+                       Column(
+                         children: [
+                           const Text("Activité de notre personnel ",style: TextStyle(fontSize: 20),),
+                        const SizedBox(height: 30,),
+                        Container(
+                          height: 500,
+                          width: 1600,
+                          child: 
+                           charts.BarChart(
+            
+                            list1,animate: true,animationDuration: Duration(seconds: 3),
+                         )
+                           
+                        ),
+                         ],
+                       ),
                        
-                
-                                     SingleChildScrollView(
-                                       child: Column(
+                   SizedBox(height: 50,),
+                                       Column(
                                          children: [
-                                           const Text("Top 10 Lecteurs actifs ",style: TextStyle(fontSize: 20),),
-                                                           SizedBox(height: 30,),          
-                                                     
-                                                        Container(
-                                                       height: 500,
-                                                       width: 400,
-                                                       child: 
-                                                        charts.BarChart(list3,animate: true,animationDuration: Duration(seconds: 3),)
-                                                       
-                                                     ), ],
+                                           const Text("Top 10 Ouvrages demandés ",style: TextStyle(fontSize: 20),),
+                                                                       SizedBox(height: 30,),
+                  
+                           Container(
+                          height: 500,
+                          width: 1600,
+                          child: 
+                           charts.BarChart(list2,animate: true,animationDuration: Duration(seconds: 3),)
+                          
+                        ),   ],
                                        ),
-                                     ),
-                
-                    ],
-                  ),
-                ),
-              ],
+                            SizedBox(height:40,),
+                         
+                  
+                                       SingleChildScrollView(
+                                         child: Column(
+                                           children: [
+                                             const Text("Top 10 Lecteurs actifs ",style: TextStyle(fontSize: 20),),
+                                                             SizedBox(height: 30,),          
+                                                       
+                                                          Container(
+                                                         height: 500,
+                                                         width: 1600,
+                                                         child: 
+                                                          charts.BarChart(list3,animate: true,animationDuration: Duration(seconds: 3),)
+                                                         
+                                                       ), ],
+                                         ),
+                                       ),
+                       SizedBox(height: 30,),
+              Text("Répartition des abonnements",style: TextStyle(fontSize: 20),),
+               SizedBox(height: 40,),
+              Row(
+                children: [
+                  SizedBox(width: 450,),
+                  PieChart(
+  dataMap: data.elementAt(3) as Map<String,double>
+  ,
+  animationDuration: Duration(milliseconds: 800),
+  chartLegendSpacing: 32,
+  chartRadius: MediaQuery.of(context).size.width / 2.7,
+  colorList: [
+    Colors.red,
+    Colors.blue,
+    Colors.green,
+    Colors.yellow,
+  ],
+  chartType: ChartType.ring,
+  legendOptions: LegendOptions(
+    showLegendsInRow: false,
+    legendPosition: LegendPosition.right,
+    showLegends: true,
+    legendTextStyle: TextStyle(
+      fontWeight: FontWeight.bold,
+    ),
+  ),
+  chartValuesOptions: ChartValuesOptions(
+    showChartValueBackground: true,
+    showChartValues: true,
+    showChartValuesInPercentage: true,
+    showChartValuesOutside: false,
+    decimalPlaces: 1,
+  ),
+),
+                ],
+              )
+
+                      ],
+                      
+                    ),
             ),
+           
+      
           );
-        }
+        }else{
+          return const Center(child: CircularProgressIndicator(),);
+        }}
       ),
     );
   }

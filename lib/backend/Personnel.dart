@@ -20,6 +20,8 @@ class Personnel {
   Personnel.define( this.nom, this.prenom, this.email, this.grade, this.age, this.date_entree, this.prets_effectues, this.mot_de_passe, this.addresse,this.cin, this.minutes_en_service,this.idpersonnel);
   Personnel.forstats(this.nom,this.prenom,this.minutes_en_service);
   
+
+  
   Future<Personnel?> Authentifier({
     required MySqlConnection mySqlConnection,
     required String nom,required String prenom , required String mot_de_passe
@@ -32,6 +34,7 @@ class Personnel {
       ]);
       
       if(results1.isNotEmpty ){
+        int idpers = results1.elementAt(0)["idpersonnel"];
          user =  Personnel.define(
           
           nom, prenom, results1.elementAt(0)["email"],
@@ -46,8 +49,8 @@ class Personnel {
            results1.elementAt(0)["idpersonnel"]);
            
       }
-      final Results results2 = await mySqlConnection.query("update personnel set derniere_activite = ? where cin = ?",[
-        DateTime.now().toUtc(),user?.cin
+      final Results results2 = await mySqlConnection.query("update personnel set derniere_activite = ? where idpersonnel = ?",[
+        DateTime.now().toUtc(),user?.idpersonnel
       ]);
       return user;
     } catch (e) {
@@ -59,11 +62,13 @@ class Personnel {
   Future<void> logout(MySqlConnection mySqlConnection )async{
     try {
        DateTime derniere_activite ;
-      Results results = await mySqlConnection.query("select derniere_activite from personnel where cin = ?",[cin]);
+      Results results = await mySqlConnection.query("select derniere_activite from personnel where idpersonnel = ?",[idpersonnel]);
     if(results.isNotEmpty) 
     {  derniere_activite = results.elementAt(0)["derniere_activite"];
-       results = await mySqlConnection.query("update personnel set minutes_en_service = minutes_en_service + ? where cin = ?",[
-         DateTimeRange(start: derniere_activite, end: DateTime.now().toUtc()).duration.inMinutes ,cin
+    print(results);
+    print(DateTime.now());
+       results = await mySqlConnection.query("update personnel set minutes_en_service = minutes_en_service + ? where idpersonnel = ?",[
+         DateTime.now().difference(derniere_activite).inMinutes ,idpersonnel
        ]);
       }
     } catch (e) {
@@ -420,13 +425,28 @@ class Personnel {
   }
 
 Future<Set<dynamic>> get_stats({required MySqlConnection mySqlConnection})async{
-  return{await get_personnels(mySqlConnection: mySqlConnection) ,await get_10Ouvrages(mySqlConnection: mySqlConnection),await get_10lecteurs(mySqlConnection: mySqlConnection)};
+  return{await get_personnels(mySqlConnection: mySqlConnection) ,await get_10Ouvrages(mySqlConnection: mySqlConnection),await get_10lecteurs(mySqlConnection: mySqlConnection),await get_stats_abonn(mySqlConnection: mySqlConnection)};
 }
+
+
+
+Future<Map<String,double>> get_stats_abonn({required MySqlConnection mySqlConnection})async{
+  try {
+    Results results =await mySqlConnection.query("select abonnement as a,count(abonnement) as c from lecteur group by abonnement");
+    return {"Premium":double.parse(results.elementAt(0)["c"].toString()),
+    "A2":double.parse(results.elementAt(1)["c"].toString()),
+    "A1":double.parse(results.elementAt(2)["c"].toString())};
+  } catch (e) {
+    
+  }
+  return {};
+}
+
 
 Future<List<Lecteur>?> get_10lecteurs({required MySqlConnection mySqlConnection})async{
       try {
        
-      Results results =  await  mySqlConnection.query("select nomlecteur,prenomlecteur,nb_prets from lecteur");
+      Results results =  await  mySqlConnection.query("select nomlecteur,prenomlecteur,nb_prets , (select count(idlecteur)  from pret where pret.idlecteur = lecteur.idlecteur  ) as count from lecteur order by count desc limit 10");
       
     List<Lecteur> list = List<Lecteur>.generate(results.length, (index) {
         return Lecteur.forstats(

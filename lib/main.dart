@@ -1,12 +1,3 @@
-
-
-
-
-
-
-
-
-
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Consts.dart';
 import 'package:flutter_application_1/Views/AjouLecView.dart';
@@ -27,18 +18,18 @@ void main() {
     routes: {
 
       Homepage :(context)=> MyHomePage(),
-      LecteurPage :(context) => Lecteurpage(),
-      AjouOuvView:(context) => AjouterOuvrage(),
-      AjouLecView:(context) => AjouterLecteur(),
-      OuvragePage:(context)=> Ouvragepage(),
-      AjouPersView:(context)=>AjouterPersonnel(),
-      AuthenView :(context)=> AuthentificationView(),
-      AjouPretView:(context)=>AjouterPret(),
-      PretPage :(context)=> PretsPage(),
-      Infopage :(context)=>Infolecteurpage(),
-      PageLectAvertis :(context)=>LecteurAverti(),
-      OuvrageMqperpage :(context)=>OuvrageMqperdpage(),
-      statsview : (context)=>StatsView(),
+      LecteurPage :(context) =>const Lecteurpage(),
+      AjouOuvView:(context) =>const AjouterOuvrage(),
+      AjouLecView:(context) =>const AjouterLecteur(),
+      OuvragePage:(context)=>const Ouvragepage(),
+      AjouPersView:(context)=>const AjouterPersonnel(),
+      AuthenView :(context)=>const AuthentificationView(),
+      AjouPretView:(context)=>const AjouterPret(),
+      PretPage :(context)=>const PretsPage(),
+      Infopage :(context)=>const Infolecteurpage(),
+      PageLectAvertis :(context)=>const LecteurAverti(),
+      OuvrageMqperpage :(context)=>const OuvrageMqperdpage(),
+      statsview : (context)=>const StatsView(),
     },
     debugShowCheckedModeBanner: false,
       theme: ThemeData(

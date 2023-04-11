@@ -108,20 +108,19 @@ class _OuvrageMqperdpageState extends State<OuvrageMqperdpage> {
                                     SizedBox(width: 50,),
                                     SingleChildScrollView(
                                       child: Container(
-                                        width: 400,
+                                        width: 500,
                                         child: Row(
                                           children: [
-                                            Text("${Ouvs.elementAt(index).nomOuvrage}",style: TextStyle(fontSize: 20),), 
+                                            Text("${Ouvs.elementAt(index).nomOuvrage}",style: TextStyle(fontSize: 20),softWrap: true,), 
                                             const   SizedBox(width: 50),
-                                            Text(" ${Ouvs.elementAt(index).nomAuteur}"),
+                                            Text(" ${Ouvs.elementAt(index).nomAuteur}",softWrap: true,),
                                           ],
                                        )) ),
-
                                     Container(
                                       width: 350,
                                       child: Row(
                                         children: [
-                                          Text("Nombre de livres : ${Ouvs.elementAt(index).nb}" ), 
+                                          Text("    Nombre de livres : ${Ouvs.elementAt(index).nb}" ), 
                                       const SizedBox(width: 20,),
                                       Text("${Ouvs.elementAt(index).nb - Ouvs.elementAt(index).nb_dispo } prets "),
                                       const SizedBox(width: 30,),
@@ -151,7 +150,10 @@ class _OuvrageMqperdpageState extends State<OuvrageMqperdpage> {
                       );}
                     });
                 }
-              )),]),
+              )),
+          
+              ]),
+              
       ),);
             }
           

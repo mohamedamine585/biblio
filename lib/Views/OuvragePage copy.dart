@@ -1,6 +1,8 @@
-import 'dart:math';
+
+
 
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/Consts.dart';
 import 'package:flutter_application_1/backend/Ouvrage.dart';
 import 'package:flutter_application_1/backend/Personnel.dart';
 import 'package:mysql1/mysql1.dart';
@@ -82,6 +84,7 @@ class _OuvrageMqperdpageState extends State<OuvrageMqperdpage> {
             ),
            const SizedBox(height: 100,),
             Container(
+
               height: 630,
               child: FutureBuilder(
                 future: personnel.get_Ouvrages_Mq_perdus(mySqlConnection: mysqlconn),
@@ -98,14 +101,16 @@ class _OuvrageMqperdpageState extends State<OuvrageMqperdpage> {
                         title:
                           Card(child: 
                           InkWell(
-                            onTap: (){},
+                            onTap: (){
+                              Navigator.of(context).pushNamedAndRemoveUntil(modouvrage, (route) => false);
+                            },
                             child: Container(
                               height: 50,
                               width: 100,
                               child: SingleChildScrollView(
                                 child: Row(
                                   children: [
-                                    SizedBox(width: 50,),
+                                   const SizedBox(width: 50,),
                                     SingleChildScrollView(
                                       child: Container(
                                         width: 500,

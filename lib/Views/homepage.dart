@@ -89,7 +89,8 @@ class _MyHomePageState extends State<MyHomePage> {
                                Text("Ouvrages",style: TextStyle(fontStyle: FontStyle.italic,color: Colors.black,fontSize: 20),),
                              ],
                            ),
-                           onTap: (){
+                           onTap: ()async{
+                            print(await user.get_stats_abonn(mySqlConnection: mysqlconn));
                             Navigator.of(context).pushNamed(OuvragePage,arguments:[user,mysqlconn]);
                            },
                          ),

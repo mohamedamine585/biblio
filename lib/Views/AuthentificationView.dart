@@ -43,10 +43,12 @@ class _AuthentificationViewState extends State<AuthentificationView> {
       future: Mysqlconn.get_connection(),
       builder: (context, snapshot) {
         return Scaffold(
+          
           appBar: AppBar(
             title:const Center(child: const Text("Authentification")),
           ),
           body: Center(
+
             child: Column(
               children: [
                   SizedBox(height: 200),
@@ -87,8 +89,8 @@ class _AuthentificationViewState extends State<AuthentificationView> {
               TextButton(
                 style: TextButton.styleFrom(backgroundColor: Color.fromARGB(255, 54, 119, 225),shape:RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5)))),
                 onPressed: ()async{
-                  
-                  final user = await Personnel().Authentifier(mySqlConnection: snapshot.data!,nom: nom.text,prenom: prenom.text,mot_de_passe: mot_de_passe.text);
+                   final user =await Personnel().Authentifier(mySqlConnection: snapshot.data, nom: nom.text, prenom: prenom.text, mot_de_passe: mot_de_passe.text);
+                 
                   if(user != null){
                     Navigator.of(context).pushNamedAndRemoveUntil(Homepage, (route) => false,arguments: [user,snapshot.data]);
                   }

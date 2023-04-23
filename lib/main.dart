@@ -1,3 +1,5 @@
+
+
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Consts.dart';
 import 'package:flutter_application_1/Views/AjouLecView.dart';
@@ -6,8 +8,10 @@ import 'package:flutter_application_1/Views/AjoutOuvrage.dart';
 import 'package:flutter_application_1/Views/AjoutPersonnel.dart';
 import 'package:flutter_application_1/Views/AuthentificationView.dart';
 import 'package:flutter_application_1/Views/InfoLecteurpage.dart';
+import 'package:flutter_application_1/Views/Infoouvrage.dart';
 import 'package:flutter_application_1/Views/OuvragePage%20copy.dart';
 import 'package:flutter_application_1/Views/OuvragePage.dart';
+import 'package:flutter_application_1/Views/Ouvrages_en_un_an.dart';
 import 'package:flutter_application_1/Views/PageLectAverti.dart';
 import 'package:flutter_application_1/Views/PretsPage.dart';
 import 'package:flutter_application_1/Views/Statsview.dart';
@@ -30,12 +34,14 @@ void main() {
       PageLectAvertis :(context)=>const LecteurAverti(),
       OuvrageMqperpage :(context)=>const OuvrageMqperdpage(),
       statsview : (context)=>const StatsView(),
+      ouvrages_en_un_an : (context) => const Ouvrage_en_un_an(),
+      modouvrage : (context) => const Infoouvrage(),
     },
     debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const AuthentificationView(),
+      home:const  AuthentificationView(),
     ));
 }
 

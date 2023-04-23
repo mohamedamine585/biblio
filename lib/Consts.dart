@@ -11,3 +11,5 @@ const Infopage = "Infopage";
 const PageLectAvertis = "PageLectAvertis";
 const OuvrageMqperpage = "OuvrageMqperd";
 const statsview = "statsview";
+const ouvrages_en_un_an = "Ouvrages_en_an";
+const modouvrage = "modouvrage";

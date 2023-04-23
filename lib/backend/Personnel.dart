@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'dart:math';
 
+import 'package:charts_flutter/flutter.dart';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Views/showdialog.dart';
@@ -14,7 +16,7 @@ class Personnel {
    late int cin ;
  late int ? age , minutes_en_service , prets_effectues ,idpersonnel;
   late DateTime date_entree ;
- late DateTime ?derniere_activite ;
+  DateTime ?derniere_activite ;
   
   Personnel();
   Personnel.define( this.nom, this.prenom, this.email, this.grade, this.age, this.date_entree, this.prets_effectues, this.mot_de_passe, this.addresse,this.cin, this.minutes_en_service,this.idpersonnel);
@@ -23,16 +25,15 @@ class Personnel {
 
   
   Future<Personnel?> Authentifier({
-    required MySqlConnection mySqlConnection,
+    required MySqlConnection ?mySqlConnection,
     required String nom,required String prenom , required String mot_de_passe
   })async{
     try {
-      Personnel? user  ;
+    if(mySqlConnection != null){  Personnel? user  ;
       final Results results1 = await mySqlConnection.query("select * from personnel where nompersonnel = ? and prenompersonnel = ? and mot_de_passe = ?",
       [
           nom,prenom,sha1.convert(utf8.encode(mot_de_passe)).toString()
       ]);
-      
       if(results1.isNotEmpty ){
         int idpers = results1.elementAt(0)["idpersonnel"];
          user =  Personnel.define(
@@ -52,8 +53,9 @@ class Personnel {
       final Results results2 = await mySqlConnection.query("update personnel set derniere_activite = ? where idpersonnel = ?",[
         DateTime.now().toUtc(),user?.idpersonnel
       ]);
-      return user;
+      return user;}
     } catch (e) {
+      print(e);
       return null;
     }
   }
@@ -85,15 +87,15 @@ class Personnel {
     
   )async{
      try {
-      Results results =await mySqlConnection.query("select idpersonnel from personnel where prenompersonnel = ? and nompersonnel = ?",[prenom,nom]);
-
+      Results results =await mySqlConnection.query("select idpersonnel from personnel where prenompersonnel = ? and nompersonnel = ?",[personnel.prenom,personnel.nom]);
       if(results.isEmpty)  {results = await mySqlConnection.query("insert into personnel(nompersonnel,prenompersonnel,email,cin,grade,date_entree,pret_effectues,minutes_en_service,derniere_activite,mot_de_passe,addresse) values(?,?,?,?,?,?,?,?,?,?,?)",[
      personnel. nom,personnel.prenom,personnel. email,personnel. cin,personnel. grade,personnel. date_entree,personnel.prets_effectues,personnel.minutes_en_service,personnel.derniere_activite,personnel.mot_de_passe,personnel.addresse
        ]);
        return true;
           }  else{
             print("User already exists !");
-          }   } catch (e) {
+          }  
+          } catch (e) {
       print(e);
        
      }
@@ -254,6 +256,7 @@ class Personnel {
      return [];
   }
     
+  
 
     Future<void> update_lecteur({required MySqlConnection mySqlConnection , required int abonnement ,required String email,
      required String nomlecteur , required  String prenomlecteur  , required int idlecteur})async{
@@ -264,7 +267,7 @@ class Personnel {
             ]);
             DateTime dateTime = DateTime.now().toUtc();
             results=  await mySqlConnection.query("call injapp.update_lect_info(?,?,?,?,?,?)",[
-              abonnement,dateTime,idlecteur,nomlecteur,prenomlecteur,email
+              abonnement,dateTime,nomlecteur,prenomlecteur,email,idlecteur
             ]);
         print(results.affectedRows);
       } catch (e) {
@@ -432,10 +435,12 @@ Future<Set<dynamic>> get_stats({required MySqlConnection mySqlConnection})async{
 
 Future<Map<String,double>> get_stats_abonn({required MySqlConnection mySqlConnection})async{
   try {
-    Results results =await mySqlConnection.query("select abonnement as a,count(abonnement) as c from lecteur group by abonnement");
-    return {"Premium":double.parse(results.elementAt(0)["c"].toString()),
+    Results results =await mySqlConnection.query("select abonnement as a,count(abonnement) as c from lecteur group by abonnement order by abonnement");
+    final map = {"Premium":double.parse(results.elementAt(2)["c"].toString()),
     "A2":double.parse(results.elementAt(1)["c"].toString()),
-    "A1":double.parse(results.elementAt(2)["c"].toString())};
+    "A1":double.parse(results.elementAt(0)["c"].toString())};
+    print(map);
+    return map;
   } catch (e) {
     
   }
@@ -491,7 +496,8 @@ Future<List<Lecteur>?> get_10lecteurs({required MySqlConnection mySqlConnection}
   
   Future<List<Personnel>> get_personnels({required MySqlConnection mySqlConnection})async{
 try {
-  Results results = await mySqlConnection.query("select nompersonnel,prenompersonnel,minutes_en_service from personnel");
+  Results results = await mySqlConnection.query("select nompersonnel,prenompersonnel,minutes_en_service from personnel order by minutes_en_service desc limit 10");
+  
  List<Personnel> list =  List<Personnel>.generate(results.length, (index){
     return Personnel.forstats(
       results.elementAt(index)["nompersonnel"]
@@ -501,7 +507,7 @@ try {
 
   return list ;
 } catch (e) {
-  
+
 }
 return [];
   }

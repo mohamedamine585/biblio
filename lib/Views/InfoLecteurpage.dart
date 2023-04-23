@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/Consts.dart';
 import 'package:flutter_application_1/backend/Lecteur.dart';
 import 'package:flutter_application_1/backend/Ouvrage.dart';
 import 'package:flutter_application_1/backend/Personnel.dart';
@@ -227,8 +228,12 @@ class _InfolecteurpageState extends State<Infolecteurpage> {
                   })
               ]),
             ),
-           const SizedBox(height: 15,),
-          
+
+                     
+           TextButton(onPressed: (){
+             Navigator.of(context).pushNamed(ouvrages_en_un_an,arguments: [lecteur,mysqlconnection]);
+           }, child:const Text("Afficher O.P.P.A") ),
+           SizedBox(height: 20,),
            Container(height: 200,
            child: FutureBuilder(
             future: lecteur.get_Ouvrages(mySqlConnection: mysqlconnection),

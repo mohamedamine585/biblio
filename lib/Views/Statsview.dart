@@ -1,9 +1,8 @@
+import 'dart:math';
+
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:flutter/material.dart';
-import 'package:flutter/src/animation/animation_controller.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
-import 'package:flutter/src/widgets/ticker_provider.dart';
+
 import 'package:flutter_application_1/backend/Ouvrage.dart';
 import 'package:flutter_application_1/backend/Personnel.dart';
 import 'package:mysql1/mysql1.dart';
@@ -48,8 +47,6 @@ class _StatsViewState extends State<StatsView>
         future:personnel.get_stats(mySqlConnection: mysqlconn) ,
         builder: (context, snapshot) {
        if(snapshot.connectionState == ConnectionState.done) { final data =   snapshot.data as Set<dynamic>;
-         final colors = [Color.fromRGBO(255, 0, 0, 1.0,),Color.fromRGBO(0, 0, 255, 1.0),Color.fromRGBO(255, 87, 34, 1.0),Color.fromRGBO(233, 30, 99, 1.0),Color.fromRGBO(233, 30, 99, 1.0),Color.fromRGBO(233, 30, 99, 1.0),Color.fromRGBO(76, 175, 80, 1.0)];
-          print(data.elementAt(3));
           final List<charts.Series<Personnel,String>> list1 = [
             charts.Series<Personnel,String>(id: "Activité de notre personnel"
             , data:data.elementAt(0) as  List<Personnel>
@@ -94,7 +91,7 @@ class _StatsViewState extends State<StatsView>
                          ],
                        ),
                        
-                   SizedBox(height: 50,),
+                 const  SizedBox(height: 50,),
                                        Column(
                                          children: [
                                            const Text("Top 10 Ouvrages demandés ",style: TextStyle(fontSize: 20),),

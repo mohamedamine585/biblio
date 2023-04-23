@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/Consts.dart';
 import 'package:flutter_application_1/backend/Ouvrage.dart';
 import 'package:flutter_application_1/backend/Personnel.dart';
 import 'package:mysql1/mysql1.dart';
@@ -119,7 +120,9 @@ class _OuvragepageState extends State<Ouvragepage> {
                         title:
                           Card(child: 
                           InkWell(
-                            onTap: (){},
+                            onTap: (){
+                              Navigator.of(context).pushNamed(modouvrage,arguments: [Ouvs.elementAt(index),mysqlconn]);
+                            },
                             child: Container(
                               height: 50,
                               width: 100,

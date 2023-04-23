@@ -40,7 +40,7 @@ class _OuvrageMqperdpageState extends State<OuvrageMqperdpage> {
     final mysqlconn = data[1]as MySqlConnection ;
     return  Scaffold(
       appBar: AppBar(
-        title:const Center(child: Text("Ouvrages")),
+        title:const Center(child: Text("Ouvrages Perdus")),
       ),
       body: SingleChildScrollView(
         child: Column(

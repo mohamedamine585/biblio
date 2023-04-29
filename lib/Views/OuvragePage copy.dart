@@ -125,6 +125,7 @@ class _OuvrageMqperdpageState extends State<OuvrageMqperdpage> {
                                       width: 350,
                                       child: Row(
                                         children: [
+                                          
                                           Text("    Nombre de livres : ${Ouvs.elementAt(index).nb}" ), 
                                       const SizedBox(width: 20,),
                                       Text("${Ouvs.elementAt(index).nb - Ouvs.elementAt(index).nb_dispo } prets "),

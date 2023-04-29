@@ -110,7 +110,7 @@ class _OuvragepageState extends State<Ouvragepage> {
                    Ouvrages = snapshot.data  ;
                    Ouvs = Ouvrages?.where((element) => (element.nomAuteur.contains(q ?? '') || element.nomOuvrage.contains(q ?? ''))
                       && ((dispofiltre && element.nb_dispo >0 ) || (pretesfiltre &&( element.nb - element.nb_dispo) > 0) || (!pretesfiltre && !dispofiltre))
-  ).toList() ?? [] ;
+                     ).toList() ?? [] ;
                   return ListView.builder(
                       itemCount: Ouvs.length,
                       itemBuilder: (context,index){
@@ -124,7 +124,7 @@ class _OuvragepageState extends State<Ouvragepage> {
                               Navigator.of(context).pushNamed(modouvrage,arguments: [Ouvs.elementAt(index),mysqlconn]);
                             },
                             child: Container(
-                              height: 50,
+                              height: 70,
                               width: 100,
                               child: SingleChildScrollView(
                                 child: Row(
@@ -132,12 +132,13 @@ class _OuvragepageState extends State<Ouvragepage> {
                                     SizedBox(width: 50,),
                                     SingleChildScrollView(
                                       child: Container(
-                                        width: 400,
+                                        width: 700,
                                         child: Row(
                                           children: [
-                                            Text("${Ouvs.elementAt(index).nomOuvrage}",style: TextStyle(fontSize: 20),), 
-                                            const   SizedBox(width: 50),
-                                            Text(" ${Ouvs.elementAt(index).nomAuteur}"),
+                                            Icon(Ouvs.elementAt(index).nb_dispo > 0? Icons.book:Icons.book_sharp,size: 60,),
+                                            Container(child: Text("      ${Ouvs.elementAt(index).nomOuvrage}",style:  TextStyle(fontWeight: FontWeight.bold,fontSize: 20)),width: 350,), 
+                                            Container(child: Text("By :"),width: 50,),
+                                            Container(child: Text(" ${Ouvs.elementAt(index).nomAuteur}",style: TextStyle(fontWeight: FontWeight.bold)),width: 200,),
                                           ],
                                        )) ),
 

@@ -8,7 +8,7 @@ class Lecteur{
  late String nom , prenom , email ;
  late String ? addresse ;
  late int? Cin,idlecteur; 
- late int nb_prets ,nb_prets_actuels , nb_alertes ,fidelite , nb_ouv_max , abonnement , nb_abonn ;
+ late int nb_prets ,nb_prets_actuels , nb_alertes ,fidelite  , abonnement , nb_abonn ;
    
 late  DateTime? date_entree , date_abonnement ;
 
@@ -16,7 +16,7 @@ late  DateTime? date_entree , date_abonnement ;
 
 
 
-  Lecteur.define( this.idlecteur,this.nom,this.prenom,this.email,this.Cin,this.addresse,this.date_entree,this.date_abonnement,this.nb_prets,this.nb_prets_actuels,this.nb_alertes,this.fidelite,this.nb_ouv_max,this.abonnement,this.nb_abonn);
+  Lecteur.define( this.idlecteur,this.nom,this.prenom,this.email,this.Cin,this.addresse,this.date_entree,this.date_abonnement,this.nb_prets,this.nb_prets_actuels,this.nb_alertes,this.fidelite,this.abonnement,this.nb_abonn);
   Lecteur.forstats(this.nom,this.prenom,this.nb_prets);
  
 
@@ -58,6 +58,35 @@ late  DateTime? date_entree , date_abonnement ;
     
                final Results results = await mySqlConnection.query("select * from ouvrage where exists(select 1 from pret where pret.idouvrage = ouvrage.idouvrage and pret.idlecteur = ? and termine = 0)  order by date_entree desc;",[
                 idlecteur
+               ]);
+          List<Ouvrage> list = List.generate(results.length, (index) {
+             return Ouvrage.define(
+                            results.elementAt(index)["idouvrage"],
+
+              results.elementAt(index)["nomouvrage"]
+             , results.elementAt(index)["nomauteur"]
+             , results.elementAt(index)["categorie"]
+             , results.elementAt(index)["nb"]
+             , results.elementAt(index)["nb_dispo"]
+             , results.elementAt(index)["nb_perdu"]
+             , results.elementAt(index)["prix"]
+                
+             , results.elementAt(index)["date_entree"]);
+          });
+          return list; 
+     } catch (e) {
+      print(e);
+       return null;
+     }
+  }
+
+  Future<List<Ouvrage>?> get_Ouvrages_delai_dep({required MySqlConnection mySqlConnection })async{
+     try {
+       
+
+    
+               final Results results = await mySqlConnection.query("select * from ouvrage where exists(select 1 from pret where pret.idouvrage = ouvrage.idouvrage and pret.idlecteur = ? and termine = 0 and fin_pret < ?)  order by date_entree desc;",[
+                idlecteur,DateTime.now().toUtc()
                ]);
           List<Ouvrage> list = List.generate(results.length, (index) {
              return Ouvrage.define(

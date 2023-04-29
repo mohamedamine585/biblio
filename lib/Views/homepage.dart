@@ -70,7 +70,8 @@ class _MyHomePageState extends State<MyHomePage> {
                              ],
                            ),
                         ),
-                       onTap: (){
+                       onTap: ()async{
+                        await user.envoyer_evertissements(mySqlConnection: mysqlconn);
                         Navigator.of(context).pushNamed(LecteurPage,arguments:[user,mysqlconn]);
                        },
                                  
@@ -90,7 +91,6 @@ class _MyHomePageState extends State<MyHomePage> {
                              ],
                            ),
                            onTap: ()async{
-                            print(await user.get_stats_abonn(mySqlConnection: mysqlconn));
                             Navigator.of(context).pushNamed(OuvragePage,arguments:[user,mysqlconn]);
                            },
                          ),

@@ -128,7 +128,7 @@ class _StatsViewState extends State<StatsView>
                SizedBox(height: 40,),
               Row(
                 children: [
-                  SizedBox(width: 450,),
+                  SizedBox(width: 470,),
                   PieChart(
   dataMap: data.elementAt(3) as Map<String,double>
   ,
@@ -139,7 +139,6 @@ class _StatsViewState extends State<StatsView>
     Colors.red,
     Colors.blue,
     Colors.green,
-    Colors.yellow,
   ],
   chartType: ChartType.ring,
   legendOptions: LegendOptions(
@@ -158,9 +157,51 @@ class _StatsViewState extends State<StatsView>
     decimalPlaces: 1,
   ),
 ),
-                ],
-              )
 
+                ],
+              ),
+              
+                    SizedBox(height: 30,),
+              Text("Fidélité des lecteurs",style: TextStyle(fontSize: 20),),
+               SizedBox(height: 40,),
+              Row(
+                children: [
+                  SizedBox(width: 470,),
+                  PieChart(
+  dataMap: data.elementAt(4) as Map<String,double>
+  ,
+  animationDuration: Duration(milliseconds: 800),
+  chartLegendSpacing: 32,
+  chartRadius: MediaQuery.of(context).size.width / 2.7,
+  colorList: [
+    Colors.yellow,
+    Color.fromARGB(255, 188, 171, 15),
+    Color.fromARGB(255, 239, 178, 37),
+        Color.fromARGB(255, 209, 167, 69),
+
+      Color.fromARGB(255, 218, 116, 52),
+        Color.fromARGB(255, 217, 62, 19),
+  ].reversed.toList(),
+  chartType: ChartType.ring,
+  legendOptions: LegendOptions(
+    showLegendsInRow: false,
+    legendPosition: LegendPosition.right,
+    showLegends: true,
+    legendTextStyle: TextStyle(
+      fontWeight: FontWeight.bold,
+    ),
+  ),
+  chartValuesOptions: ChartValuesOptions(
+    showChartValueBackground: true,
+    showChartValues: true,
+    showChartValuesInPercentage: true,
+    showChartValuesOutside: false,
+    decimalPlaces: 1,
+  ),
+),
+
+                ],
+              ),
                       ],
                       
                     ),

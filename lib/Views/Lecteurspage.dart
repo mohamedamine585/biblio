@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Consts.dart';
+import 'package:flutter_application_1/Views/Ouvragedelaiperd.dart';
+import 'package:flutter_application_1/Views/showdialog.dart';
 import 'package:flutter_application_1/backend/Lecteur.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:mysql1/mysql1.dart';
@@ -17,6 +19,8 @@ class Lecteurpage extends StatefulWidget {
 class _LecteurpageState extends State<Lecteurpage> {
   List<Lecteur>? Lecteurs = [];
   String ?s;
+  bool _isHovered = false ;
+  int indhov = -1 ;
   @override
   late final TextEditingController query ;
   @override
@@ -35,6 +39,7 @@ class _LecteurpageState extends State<Lecteurpage> {
     final personnel = data[0] as Personnel ;
     final mysqlconn = data[1]as MySqlConnection ;    
       List<Lecteur> lecs = [];
+      double size = 10;
 
     return  Scaffold(
       appBar: AppBar(
@@ -81,6 +86,7 @@ lecs = Lecteurs?.where((element) => element.prenom.toLowerCase().contains(s ?? "
                   return ListView.builder(
                       itemCount: lecs.length,
                       itemBuilder: (context,index){
+                       
                       int temps_abonn_restant = 0;
                       try {
                        temps_abonn_restant = 30- DateTimeRange(start: lecs.elementAt(index).date_abonnement ?? DateTime.now(), end: DateTime.now()).duration.inDays;
@@ -97,15 +103,54 @@ lecs = Lecteurs?.where((element) => element.prenom.toLowerCase().contains(s ?? "
 
                             },
                             child: Container(
-                              height: 50,
+                              height: 70,
                               width: 100,
                               child: SingleChildScrollView(
                                 child: Row(
                                   children: [
+                                     Badge(
+                                      
+                                      largeSize: 20,
+                                      isLabelVisible: lecs.elementAt(index).nb_alertes > 0,
+                                      label: MouseRegion(
+                                        
+                                        onEnter:(event) {
+                                        
+                                          setState(() {
+                                               
+                                              _isHovered = true;
+                                              indhov = index;
+                                          });
+                                        },
+                                        onExit: (event) {
+                                          setState(() {
+                                            _isHovered = false;
+                                            indhov = -1;
+                                          });
+                                        },
+                                        
+                                        child: AnimatedContainer(
+                               duration: Duration(milliseconds: 200),
+                                  child:  InkWell(
+                                    onTap: (){
+                                      ouvragedelaidep(lecs.elementAt(index), context, mysqlconn);
+                                    },
+                                    child: Icon(
+                                      Icons.error,
+                                      size: (_isHovered && indhov == index)? 20:10,
+                                            
+                                    ),
+                                  ),
+      ),),
+                                      child:Icon(Icons.person,size: 50),
+
+                                    ),
                                     SizedBox(width: 50,),
+
                                     SingleChildScrollView(
                                       child: Container(
                                         width: 400,
+                                        
                                         child: Text("${lecs.elementAt(index).nom} ${lecs.elementAt(index).prenom}")),
                                     ),
                                     Text("CIN : ${lecs.elementAt(index).Cin}    "),

@@ -1,6 +1,7 @@
 
 
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/Views/showdialog.dart';
 
 import 'package:flutter_application_1/backend/Personnel.dart';
 import 'package:mysql1/mysql1.dart';
@@ -126,6 +127,9 @@ class _AjouterPretState extends State<AjouterPret> {
                 if(added) {
                   Navigator.of(context).pop();
                 }}
+                else{
+                  sd("Nombre de jours de pret invalide", context);
+                }
               }, child: const Text("Ajouter Pret"))
       
           ],

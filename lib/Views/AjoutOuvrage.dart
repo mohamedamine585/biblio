@@ -113,8 +113,11 @@ class _AjouterOuvrageState extends State<AjouterOuvrage> {
                const SizedBox(height: 40),
               TextButton(onPressed: ()async{    
                 Ouvrage ouvrage =Ouvrage.define(null,nom.text, auteur.text, categorie.text , int.parse(nb.text), int.parse(nb.text), 0,double.parse(prix.text), DateTime.now().toUtc())        ;
-            await  personnel.add_Ouvrage(mySqlConnection: mySqlConnection, ouvrage: ouvrage,context: context);
-             
+         final _added =   await  personnel.add_Ouvrage(mySqlConnection: mySqlConnection, ouvrage: ouvrage,context: context);
+             if(_added)
+             {
+              Navigator.pop(context);
+             }
               }, child: const Text("Ajouter ouvrage"))
       
           ],

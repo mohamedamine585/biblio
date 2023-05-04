@@ -202,6 +202,44 @@ class _StatsViewState extends State<StatsView>
 
                 ],
               ),
+              SizedBox(height: 40,),
+            Text("Stats des prets",style: TextStyle(fontSize: 20),),
+
+              SizedBox(height: 40,),
+              Row(
+                children: [
+                  SizedBox(width: 470,),
+                  PieChart(
+  dataMap: data.elementAt(5) as Map<String,double>
+  ,
+  animationDuration: Duration(milliseconds: 800),
+  chartLegendSpacing: 32,
+  chartRadius: MediaQuery.of(context).size.width / 2.7,
+  colorList: [ Color.fromARGB(255, 217, 62, 19),
+    Color.fromARGB(255, 14, 44, 180),
+   
+        Color.fromARGB(255, 22, 159, 120),
+  ].reversed.toList(),
+  chartType: ChartType.disc,
+  legendOptions: LegendOptions(
+    showLegendsInRow: false,
+    legendPosition: LegendPosition.right,
+    showLegends: true,
+    legendTextStyle: TextStyle(
+      fontWeight: FontWeight.bold,
+    ),
+  ),
+  chartValuesOptions: ChartValuesOptions(
+    showChartValueBackground: true,
+    showChartValues: true,
+    showChartValuesInPercentage: true,
+    showChartValuesOutside: false,
+    decimalPlaces: 1,
+  ),
+),
+
+                ],
+              ),
                       ],
                       
                     ),

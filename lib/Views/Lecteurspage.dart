@@ -99,8 +99,11 @@ lecs = Lecteurs?.where((element) => element.prenom.toLowerCase().contains(s ?? "
                           Card(child: 
                           InkWell(
                             onTap: ()async{
-                        await  Navigator.of(context).pushNamed( Infopage,arguments: [mysqlconn,lecs.elementAt(index),personnel]);
-
+                       await  Navigator.of(context).pushNamed( Infopage,arguments: [mysqlconn,lecs.elementAt(index),personnel]) ;
+                       setState(() {
+                         
+                       });
+                            
                             },
                             child: Container(
                               height: 70,

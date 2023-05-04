@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Consts.dart';
+import 'package:flutter_application_1/Views/showdialog.dart';
 import 'package:flutter_application_1/backend/Lecteur.dart';
 import 'package:flutter_application_1/backend/Ouvrage.dart';
 import 'package:flutter_application_1/backend/Personnel.dart';
@@ -22,6 +23,7 @@ class _InfolecteurpageState extends State<Infolecteurpage> {
      late final TextEditingController cin ; 
       late final TextEditingController adresse ; 
       bool ischecked1 = true, ischecked2 = false, ischecked3 = false;
+      bool touched = true ;
      @override 
      void initState() {
     nom = TextEditingController();
@@ -48,12 +50,31 @@ class _InfolecteurpageState extends State<Infolecteurpage> {
     final personnel = data[2] as Personnel;
     final lecteur = data[1] as Lecteur; 
      List<Ouvrage> ouvs = [];
-     bool enunan = false;
-   nom.text= lecteur.nom;
+     bool enunan = false ;
+    if(touched){ 
+     switch (lecteur.abonnement) {
+       case 1:
+         ischecked1 = true ;
+         ischecked2 = ischecked3 = false ;
+         break;
+      case 2 : 
+      ischecked2 = true ;
+         ischecked1 = ischecked3 = false ;
+         break;
+
+       default:
+       ischecked3 = true ;
+         ischecked2 = ischecked1 = false ;
+         break;
+     }
+     nom.text= lecteur.nom;
       prenom.text= lecteur.prenom;
    email.text= lecteur.email;
    cin.text= lecteur.Cin.toString();
    adresse.text = lecteur.addresse ?? "";
+     touched= false;
+     }
+   
    
     return  Scaffold(
       appBar: AppBar(
@@ -167,9 +188,15 @@ class _InfolecteurpageState extends State<Infolecteurpage> {
                   if(ischecked3)
                      abonnement = 3;
                    
-                 await personnel.update_lecteur(mySqlConnection: mysqlconnection,nomlecteur: nom.text,prenomlecteur: prenom.text,abonnement: abonnement,idlecteur: lecteur.idlecteur ?? -1,email: email.text);
-            
-               Navigator.pop(context,true);
+               final bool updated =  await personnel.update_lecteur(mySqlConnection: mysqlconnection,nomlecteur: nom.text,prenomlecteur: prenom.text,abonnement: abonnement,idlecteur: lecteur.idlecteur ?? -1,email: email.text,context: context);
+             if(updated)
+              { Navigator.pop(context);}
+              else{
+                
+                
+               sd("Un lecteur a ce nom ou ce prenom", context);
+
+              }
               }, child: const Text("Mise à jour du lecteur")),
                  Container(
               height:120,
@@ -190,17 +217,18 @@ class _InfolecteurpageState extends State<Infolecteurpage> {
                                 child: Row(
                                   children: [
                                     SizedBox(width: 50,),
-                                    SingleChildScrollView(
-                                      child: Container(
+                                     Container(
                                         height: 70,
                                         width: 400,
                                         child: Row(
                                           children: [
-                                            Text("${ouvrage?.nomOuvrage}",style: TextStyle(fontSize: 20),), 
+                                            Container(width: 300,
+
+                                              child: Text("${ouvrage?.nomOuvrage}",style: TextStyle(fontSize: 20),softWrap: true,)), 
                                             const   SizedBox(width: 50),
                                             Text(" ${ouvrage?.nomAuteur}"),
                                           ],
-                                       )) ),
+                                       )) ,
 
                                     Container(
                                       width: 700,
@@ -250,19 +278,19 @@ class _InfolecteurpageState extends State<Infolecteurpage> {
                             onTap: (){},
                             child: Container(
                               height: 50,
-                              width: 100,
+                              width: 1100,
                               child: SingleChildScrollView(
                                 child: Row(
                                   children: [
                                     SizedBox(width: 50,),
                                     SingleChildScrollView(
                                       child: Container(
-                                        width: 400,
+                                        width: 690,
                                         child: Row(
                                           children: [
-                                            Text("${ouvs.elementAt(index).nomOuvrage}",style: TextStyle(fontSize: 20),), 
+                                            Container(child: Text("${ouvs.elementAt(index).nomOuvrage}",style: TextStyle(fontSize: 20),softWrap: true,)), 
                                             const   SizedBox(width: 50),
-                                            Text(" ${ouvs.elementAt(index).nomAuteur}"),
+                                            Container(child: Text(" ${ouvs.elementAt(index).nomAuteur}")),
                                           ],
                                        )) ),
 

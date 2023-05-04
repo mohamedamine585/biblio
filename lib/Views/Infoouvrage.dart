@@ -57,6 +57,7 @@ class _InfoouvrageState extends State<Infoouvrage> {
                 controller: nom,
                 decoration: InputDecoration(
                   hintText:"Nom de l'ouvrage",
+                  
                   hintStyle: TextStyle(fontStyle: FontStyle.italic)
                 ),
               ),

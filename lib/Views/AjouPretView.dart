@@ -125,6 +125,7 @@ class _AjouterPretState extends State<AjouterPret> {
                 Pret? pret = Pret.define(null,null,null,null, nomlecteur.text,  prenomlecteur.text, nomouvrage.text,  nomauteur.text,date_deb,date_fin,personnel.nom,personnel.prenom,0);
                 bool added =   await personnel.ajouter_pret(mySqlConnection: mySqlConnection,pret: pret,context: context);     
                 if(added) {
+               await personnel.envoyer_evertissements(mySqlConnection: mySqlConnection);
                   Navigator.of(context).pop();
                 }}
                 else{

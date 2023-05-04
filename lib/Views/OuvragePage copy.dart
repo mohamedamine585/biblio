@@ -122,7 +122,7 @@ class _OuvrageMqperdpageState extends State<OuvrageMqperdpage> {
                                           ],
                                        )) ),
                                     Container(
-                                      width: 350,
+                                      width: 450,
                                       child: Row(
                                         children: [
                                           
@@ -130,7 +130,7 @@ class _OuvrageMqperdpageState extends State<OuvrageMqperdpage> {
                                       const SizedBox(width: 20,),
                                       Text("${Ouvs.elementAt(index).nb - Ouvs.elementAt(index).nb_dispo } prets "),
                                       const SizedBox(width: 30,),
-                                       Text("${Ouvs.elementAt(index).categorie ??  ' ' }"),
+                                       Text("nombre de copies perdues :  ${Ouvs.elementAt(index).nb_perdu }"),
                                        
                                         ],
                                       ),

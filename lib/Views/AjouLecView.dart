@@ -20,7 +20,9 @@ class _AjouterLecteurState extends State<AjouterLecteur> {
     late final TextEditingController email ; 
      late final TextEditingController cin ; 
       late final TextEditingController adresse ; 
-      bool ischecked1 = true, ischecked2 = false, ischecked3 = false;
+      bool ischecked1 = true, ischecked2 = false, ischecked3 = false , _emailerror =false , _nomerror = false , _prenomerror = false 
+       , _cinerror = false  ;
+
      @override 
      void initState() {
     nom = TextEditingController();
@@ -57,7 +59,20 @@ class _AjouterLecteurState extends State<AjouterLecteur> {
               width: 400,
               child: TextField(
                 controller: nom,
+                 onChanged: (value){
+                   setState(() {
+                     if (value.contains(RegExp(r'[!@#\$&*~]')) ||  ( value != "" ? value[0] == ' ':false )){
+                       _nomerror = true;
+                    }
+                    else{
+                      _nomerror= false;
+                    }
+                   }); 
+                  },
                 decoration: InputDecoration(
+                  errorText: _nomerror ? "Format invalide du nom":null,
+           
+              
                   hintText:"Nom du lecteur",
                   hintStyle: TextStyle(fontStyle: FontStyle.italic)
                 ),
@@ -68,7 +83,20 @@ class _AjouterLecteurState extends State<AjouterLecteur> {
                  width: 400,
                 child: TextField(
                   controller: prenom,
+                   onChanged: (value){
+                   setState(() {
+                     if (value.contains(RegExp(r'[!@#\$&*~]'))|| ( value != "" ? value[0] == ' ':false )){
+                       _prenomerror = true;
+                    }
+                    else{
+                      _prenomerror= false;
+                    }
+                   }); 
+                  },
                 decoration: InputDecoration(
+                  errorText: _prenomerror ? "Format invalide du prenom":null,
+                 
+              
                   hintText:"Prenom du lecteur",
                   hintStyle: TextStyle(fontStyle: FontStyle.italic)
                 ),
@@ -79,7 +107,22 @@ class _AjouterLecteurState extends State<AjouterLecteur> {
                width: 400,
                child: TextField(
                   controller: email,
+                  onChanged: (value){
+                   setState(() {
+                     if (value.contains(RegExp(r'@[a-zA-Z1-9]+\.+[a-zA-Z1-9]')) || value == ""|| ( value != "" ? value[0] == ' ':false )){
+                       _emailerror = false;
+                    }
+                    else{
+                      _emailerror = true;
+                    }
+                   }); 
+                  },
+
+                  
                 decoration: InputDecoration(
+                  errorText: _emailerror ? "Format invalide de l'email":null,
+                 
+              
                   hintText:"email du lecteur : XXX@YYY.com",
                   hintStyle: TextStyle(fontStyle: FontStyle.italic)
                 ),
@@ -90,9 +133,20 @@ class _AjouterLecteurState extends State<AjouterLecteur> {
                width: 400,
               child: TextField(
                   controller: cin,
-                 
+                  onChanged: (value){
+                   setState(() {
+                     if (value.contains(RegExp(r'[a-zA-Z !@#\$&*~]')) || value == "" || value.length > 8 ){
+                       _cinerror = true;
+                    }
+                    else{
+                      _cinerror = false;
+                    }
+                   }); 
+                  },
+
                 decoration: InputDecoration(
-                
+                  errorText:   _cinerror ? "Format invalide du CIN":null,
+                 
                   hintText:"CIN du lecteur",
                   hintStyle: TextStyle(fontStyle: FontStyle.italic)
                 ),
@@ -158,12 +212,14 @@ class _AjouterLecteurState extends State<AjouterLecteur> {
                      abonnement = 3;
                    
                
-               if(RegExp(r'^[0-9]+$').hasMatch(cin.text) || cin.text == ""){ final lecteur =Lecteur.define(null, nom.text, prenom.text, email.text,int.parse(cin.text), adresse.text, DateTime.now(),DateTime.now(), 0,0,0,1,abonnement,1);
+               if(_cinerror && _emailerror && _nomerror && _prenomerror){
+                 final lecteur =Lecteur.define(null, nom.text, prenom.text, email.text,int.parse(cin.text), adresse.text, DateTime.now(),DateTime.now(), 0,0,0,1,abonnement,1);
                 bool added= await personnel.add_lecteur(mySqlConnection: mySqlConnection,lecteur: lecteur);
                 if(added) {
                   Navigator.of(context).pop();
                 }}else{
-                  sd("Cin Format Not Accepted", context);
+                  
+               sd("Le Format des données est inacceptable", context);
                 }
               }, child: const Text("Ajouter lecteur"))
       

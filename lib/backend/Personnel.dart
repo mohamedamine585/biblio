@@ -469,16 +469,22 @@ Future<Set<dynamic>> get_stats({required MySqlConnection mySqlConnection})async{
 
 Future<Map<String,double>> gets_stats_prets({required MySqlConnection mySqlConnection})async{
    Map<String,double> map = {
-    "prets terminés dans le délai imparti": 0 , "prets non terminés dans le délai imparti":0 , "prets terminés":0};
+    "prets terminés dans le délai imparti": 0 , "prets terminés mais non dans le délai imparti":0 , "prets non terminés ":0 , "prets non terminés dépassant le délai" : 0};
   try {
     Results results =await mySqlConnection.query("select count(pret.idpret) as c1,count(avertissement.idpret) as c2 from avertissement right join pret on avertissement.idpret = pret.idpret where termine = 1");
-    Results results1 = await mySqlConnection.query("select count(idpret) as c from pret where termine = 0");
+    Results results1 = await mySqlConnection.query("select count(idpret) as c from pret where termine = 0 and fin_pret > ?",[DateTime.now().toUtc()]);
+    Results results2 = await mySqlConnection.query("select count(idpret) as k from pret where termine = 0 and fin_pret < ?",[DateTime.now().toUtc()]);
+
   if(results.isNotEmpty ){
   map["prets terminés dans le délai imparti"] =  double.parse((results.elementAt(0)["c1"] -results.elementAt(0)["c2"]).toString());
-  map["prets non terminés dans le délai imparti"] =double.parse(results.elementAt(0)["c2"].toString());
+  map["prets terminés mais non dans le délai imparti"] =double.parse(results.elementAt(0)["c2"].toString());
   }
   if(results1.isNotEmpty){
-    map["prets terminés"] = double.parse(results1.elementAt(0)["c"].toString());
+    map["prets non terminés"] = double.parse(results1.elementAt(0)["c"].toString());
+  }
+  if(results2.isNotEmpty){
+        map["prets non terminés dépassant le délai"] = double.parse(results2.elementAt(0)["k"].toString());
+
   }
   
   }

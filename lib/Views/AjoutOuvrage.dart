@@ -22,6 +22,8 @@ class _AjouterOuvrageState extends State<AjouterOuvrage> {
      late final TextEditingController prix ; 
           late final TextEditingController categorie ; 
 
+      bool _copyerror = false , _prixerror = false ; 
+
      @override 
      void initState() {
     nom = TextEditingController();
@@ -78,8 +80,20 @@ class _AjouterOuvrageState extends State<AjouterOuvrage> {
                width: 400,
                child: TextField(
                   controller: nb,
+                        onChanged: (value){
+                   setState(() {
+                     if (value.contains(RegExp(r'[a-zA-Z !@#\$&*~]')) || value == ""  ){
+                       _copyerror = true;
+                    }
+                    else{
+                      _copyerror = false;
+                    }
+                   }); 
+                  },
+
                 decoration: InputDecoration(
-                  hintText:"nb",
+                     errorText: _copyerror? "Format du nombre inacceptable":null,
+                  hintText:"nombre de copies",
                   hintStyle: TextStyle(fontStyle: FontStyle.italic)
                 ),
                        ),
@@ -87,11 +101,22 @@ class _AjouterOuvrageState extends State<AjouterOuvrage> {
              SizedBox(height: 15),
             Container(
                width: 400,
+               
               child: TextField(
                   controller: prix,
-                 
+                       onChanged: (value){
+                   setState(() {
+                     if (value.contains(RegExp(r'[a-zA-Z !@#\$&*~]'))  ){
+                       _prixerror = true;
+                    }
+                    else{
+                      _prixerror = false;
+                    }
+                   }); 
+                  },
+
                 decoration: InputDecoration(
-                
+                  errorText: _prixerror? "Format du prix inacceptable":null,
                   hintText:"prix d'ouvrage en DT",
                   hintStyle: TextStyle(fontStyle: FontStyle.italic)
                 ),
@@ -103,6 +128,7 @@ class _AjouterOuvrageState extends State<AjouterOuvrage> {
                  width: 400,
                 child: TextField(
                   controller: categorie,
+                  
                 decoration: InputDecoration(
                   hintText:"catégorie de l'ouvrage ",
                   hintStyle: TextStyle(fontStyle: FontStyle.italic)
@@ -112,11 +138,14 @@ class _AjouterOuvrageState extends State<AjouterOuvrage> {
              
                const SizedBox(height: 40),
               TextButton(onPressed: ()async{    
-                Ouvrage ouvrage =Ouvrage.define(null,nom.text, auteur.text, categorie.text , int.parse(nb.text), int.parse(nb.text), 0,double.parse(prix.text), DateTime.now().toUtc())        ;
+             if(_copyerror && _prixerror)  {  Ouvrage ouvrage =Ouvrage.define(null,nom.text, auteur.text, categorie.text , int.parse(nb.text), int.parse(nb.text), 0,double.parse(prix.text), DateTime.now().toUtc())        ;
          final _added =   await  personnel.add_Ouvrage(mySqlConnection: mySqlConnection, ouvrage: ouvrage,context: context);
              if(_added)
              {
               Navigator.pop(context);
+             }}
+             else{
+              sd("Le format des données est inacceptable", context);
              }
               }, child: const Text("Ajouter ouvrage"))
       

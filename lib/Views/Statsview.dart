@@ -1,4 +1,3 @@
-import 'dart:math';
 
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:flutter/material.dart';
@@ -95,7 +94,7 @@ class _StatsViewState extends State<StatsView>
                                        Column(
                                          children: [
                                            const Text("Top 10 Ouvrages demandés ",style: TextStyle(fontSize: 20),),
-                                                                       SizedBox(height: 30,),
+                                                                   const    SizedBox(height: 30,),
                   
                            Container(
                           height: 500,
@@ -215,7 +214,9 @@ class _StatsViewState extends State<StatsView>
   animationDuration: Duration(milliseconds: 800),
   chartLegendSpacing: 32,
   chartRadius: MediaQuery.of(context).size.width / 2.7,
-  colorList: [ Color.fromARGB(255, 217, 62, 19),
+  colorList: [
+       Color.fromARGB(255, 159, 157, 22),
+     Color.fromARGB(255, 217, 62, 19),
     Color.fromARGB(255, 14, 44, 180),
    
         Color.fromARGB(255, 22, 159, 120),

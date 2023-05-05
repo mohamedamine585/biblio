@@ -56,6 +56,7 @@ class _LecteurpageState extends State<Lecteurpage> {
               onChanged: (value) {
                 setState(() {
                  s  = value;
+                 
                   
                 });
               },
@@ -198,8 +199,10 @@ lecs = Lecteurs?.where((element) => element.prenom.toLowerCase().contains(s ?? "
       ),);
             }
           
-        
+    
       
       
     
   }
+
+

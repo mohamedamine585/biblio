@@ -23,7 +23,7 @@ class _AjouterPretState extends State<AjouterPret> {
      late final TextEditingController nomlecteur ; 
           late final TextEditingController prenomlecteur ; 
           late final TextEditingController days ; 
-
+   bool _dayserror = false;
      @override 
      void initState() {
       days = TextEditingController();
@@ -106,10 +106,20 @@ class _AjouterPretState extends State<AjouterPret> {
               child: TextField(
                  
                   controller: days,
-                 
+                    onChanged: (value){
+                   setState(() {
+                     if (value.contains(RegExp(r'[a-zA-Z !@#\$&*~]'))  ){
+                       _dayserror = true;
+                    }
+                    else{
+                      _dayserror = false;
+                    }
+                   }); 
+                  },
+
                 decoration: InputDecoration(
-                
-                  hintText:"Duration in days",
+                errorText: _dayserror? "La durée en jours est invalide":null,
+                  hintText:"Durée en jours",
                   hintStyle: TextStyle(fontStyle: FontStyle.italic)
                 ),
               ),
@@ -121,7 +131,7 @@ class _AjouterPretState extends State<AjouterPret> {
                 SizedBox(height: 40),
               TextButton(onPressed: ()async{
 
-               if(RegExp(r'^[0-9]+$').hasMatch(days.text)) {DateTime date_deb = DateTime.now().toUtc() , date_fin = DateTime.now().add(Duration(days: int.parse(days.text))).toUtc();
+               if(!_dayserror) {DateTime date_deb = DateTime.now().toUtc() , date_fin = DateTime.now().add(Duration(days: int.parse(days.text))).toUtc();
                 Pret? pret = Pret.define(null,null,null,null, nomlecteur.text,  prenomlecteur.text, nomouvrage.text,  nomauteur.text,date_deb,date_fin,personnel.nom,personnel.prenom,0);
                 bool added =   await personnel.ajouter_pret(mySqlConnection: mySqlConnection,pret: pret,context: context);     
                 if(added) {
@@ -129,7 +139,7 @@ class _AjouterPretState extends State<AjouterPret> {
                   Navigator.of(context).pop();
                 }}
                 else{
-                  sd("Nombre de jours de pret invalide", context);
+                  sd("Durée de pret invalide", context);
                 }
               }, child: const Text("Ajouter Pret"))
       

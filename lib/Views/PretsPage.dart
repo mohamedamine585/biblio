@@ -99,10 +99,9 @@ class _PretsPageState extends State<PretsPage> {
                 future: personnel.get_prets(mySqlConnection: mysqlconn),
                 builder: (context, snapshot) {
                    Prets = snapshot.data ?? []  ;
-                     P = Prets.where((element) => (element!.nompersonnel.contains(s)  || (element.prenompersonnel.contains(s)) 
-                        || element.nomouvrage.contains(s)  || (element.auteur.contains(s) || (element.nomlecteur.contains(s)) ||(element.prenomlecteur.contains(s)) )) && (!actuelfiltre || (element.termine == 0))).toList();
+                     P = Prets.where((element) => pret_cherche(element?.nomlecteur ?? ""
+                     , element?.prenomlecteur ?? "", element?.nomouvrage ?? "", element?.auteur ?? "", s)).toList();
                   return ListView.builder(
-                    key: Key("listv"),
                       itemCount: P.length,
                       itemBuilder: (context,index){
                           int temps_pret_restant;
@@ -176,4 +175,19 @@ class _PretsPageState extends State<PretsPage> {
       
       
     
+  }
+
+
+
+
+  bool pret_cherche(String nom , String prenom , String ouvrage , String auteur , String? s){
+ 
+ 
+ 
+ return   nom.contains(s?.substring(s.contains( RegExp(r'#\w+'))?s.indexOf('#')+1:0) ?? "###") ||prenom.contains(s?.substring(s.contains( RegExp(r'#\w+'))?s.indexOf('#')+1:0) ?? "") || ouvrage.contains(s?.substring(0,s.contains(RegExp(r'w+\#'))?s.indexOf('#')-1:s.length ) ?? "") || auteur.contains(s?.substring(0,s.contains(RegExp(r'w+\#'))?s.indexOf('#')-1:s.length ) ?? "")
+ || nom.toLowerCase().contains(s?.substring(s.contains( RegExp(r'#\w+'))?s.indexOf('#')+1:0) ?? "###") ||prenom.toLowerCase().contains(s?.substring(s.contains( RegExp(r'#\w+'))?s.indexOf('#')+1:0) ?? "") || ouvrage.toLowerCase().contains(s?.substring(0,s.contains(RegExp(r'w+\#'))?s.indexOf('#')-1:s.length)?? "") || auteur.toLowerCase().contains(s?.substring(0,s.contains(RegExp(r'w+\#'))?s.indexOf('#')-1:s.length ) ?? "") ;
+        
+
+
+
   }

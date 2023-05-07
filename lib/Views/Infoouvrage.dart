@@ -114,7 +114,7 @@ class _InfoouvrageState extends State<Infoouvrage> {
               TextButton(onPressed: ()async{    
               final  ouv = Ouvrage.define(ouvrage.idouvrage, nom.text, auteur.text, categorie.text, int.parse(nb.text), ouvrage.nb_dispo, ouvrage.nb_perdu, double.parse(prix.text), ouvrage.date_entree);
                await ouvrage.Modifier_ouvrage(mySqlConnection: mySqlConnection, ouvrage: ouv);
-              Navigator.of(context).pop();
+              Navigator.of(context).pop(true);
               }, child: const Text("Modifier ouvrage"))
       
           ],

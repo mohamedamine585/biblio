@@ -120,8 +120,15 @@ class _OuvragepageState extends State<Ouvragepage> {
                         title:
                           Card(child: 
                           InkWell(
-                            onTap: (){
-                              Navigator.of(context).pushNamed(modouvrage,arguments: [Ouvs.elementAt(index),mysqlconn]);
+                            onTap: ()async{
+                            bool _updated = await  Navigator.of(context).pushNamed(modouvrage,arguments: [Ouvs.elementAt(index),mysqlconn]) as bool;
+                            if(_updated)
+                             {
+                              setState(() {
+                                
+                              });
+                             }
+                             
                             },
                             child: Container(
                               height: 70,
@@ -148,7 +155,8 @@ class _OuvragepageState extends State<Ouvragepage> {
                                         children: [
                                           Text("Nombre de livres : ${Ouvs.elementAt(index).nb}" ), 
                                       const SizedBox(width: 20,),
-                                      Text("${Ouvs.elementAt(index).nb - Ouvs.elementAt(index).nb_dispo } prets "),
+                                      Container(child: Text("${Ouvs.elementAt(index).nb - Ouvs.elementAt(index).nb_dispo } prets ")
+                                   ,   width: 70,),
                                       const SizedBox(width: 30,),
                                        Text("${Ouvs.elementAt(index).categorie ??  ' ' }"),
                                        

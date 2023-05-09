@@ -184,8 +184,8 @@ class _PretsPageState extends State<PretsPage> {
  
  
  
- return   nom.contains(s?.substring(s.contains( RegExp(r'#\w+'))?s.indexOf('#')+1:0) ?? "###") ||prenom.contains(s?.substring(s.contains( RegExp(r'#\w+'))?s.indexOf('#')+1:0) ?? "") || ouvrage.contains(s?.substring(0,s.contains(RegExp(r'w+\#'))?s.indexOf('#')-1:s.length ) ?? "") || auteur.contains(s?.substring(0,s.contains(RegExp(r'w+\#'))?s.indexOf('#')-1:s.length ) ?? "")
- || nom.toLowerCase().contains(s?.substring(s.contains( RegExp(r'#\w+'))?s.indexOf('#')+1:0) ?? "###") ||prenom.toLowerCase().contains(s?.substring(s.contains( RegExp(r'#\w+'))?s.indexOf('#')+1:0) ?? "") || ouvrage.toLowerCase().contains(s?.substring(0,s.contains(RegExp(r'w+\#'))?s.indexOf('#')-1:s.length)?? "") || auteur.toLowerCase().contains(s?.substring(0,s.contains(RegExp(r'w+\#'))?s.indexOf('#')-1:s.length ) ?? "") ;
+ return   (nom.contains(s?.substring(s.contains( RegExp(r'#\w+'))?s.indexOf('#')+1:0) ?? "###") ||prenom.contains(s?.substring(s.contains( RegExp(r'#\w+'))?s.indexOf('#')+1:0) ?? "") || ouvrage.contains(s?.substring(0,s.contains(RegExp(r'w+\#'))?s.indexOf('#')-1:s.length ) ?? "") || auteur.contains(s?.substring(0,s.contains(RegExp(r'w+\#'))?s.indexOf('#')-1:s.length ) ?? "")
+ || nom.toLowerCase().contains(s?.substring(s.contains( RegExp(r'#\w+'))?s.indexOf('#')+1:0) ?? "###") ||prenom.toLowerCase().contains(s?.substring(s.contains( RegExp(r'#\w+'))?s.indexOf('#')+1:0) ?? "") || ouvrage.toLowerCase().contains(s?.substring(0,s.contains(RegExp(r'w+\#'))?s.indexOf('#')-1:s.length)?? "") || auteur.toLowerCase().contains(s?.substring(0,s.contains(RegExp(r'w+\#'))?s.indexOf('#')-1:s.length ) ?? "") ) || s == "" || s == "#";
         
 
 

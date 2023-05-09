@@ -469,7 +469,7 @@ Future<Set<dynamic>> get_stats({required MySqlConnection mySqlConnection})async{
 
 Future<Map<String,double>> gets_stats_prets({required MySqlConnection mySqlConnection})async{
    Map<String,double> map = {
-    "prets terminés dans le délai imparti": 0 , "prets terminés mais non dans le délai imparti":0 , "prets non terminés ":0 , "prets non terminés dépassant le délai" : 0};
+    "prets terminés dans le délai imparti": 0 , "prets terminés mais non dans le délai imparti":0 , "prets non terminés":0 , "prets non terminés dépassant le délai" : 0};
   try {
     Results results =await mySqlConnection.query("select count(pret.idpret) as c1,count(avertissement.idpret) as c2 from avertissement right join pret on avertissement.idpret = pret.idpret where termine = 1");
     Results results1 = await mySqlConnection.query("select count(idpret) as c from pret where termine = 0 and fin_pret > ?",[DateTime.now().toUtc()]);
@@ -486,7 +486,6 @@ Future<Map<String,double>> gets_stats_prets({required MySqlConnection mySqlConne
         map["prets non terminés dépassant le délai"] = double.parse(results2.elementAt(0)["k"].toString());
 
   }
-  
   }
    catch (e) {
     print(e);
@@ -533,7 +532,7 @@ Map<String,double> map = {
     List<double> ind = [0,0,0];
     results.forEach((element) {
      
-      ind[element.fields["a"]] = double.parse(element.fields["c"].toString());
+      ind[element.fields["a"]-1] = double.parse(element.fields["c"].toString());
     });
     map = {
       "A1": ind[0],

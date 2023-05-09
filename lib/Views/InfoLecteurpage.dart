@@ -219,14 +219,13 @@ class _InfolecteurpageState extends State<Infolecteurpage> {
                                     SizedBox(width: 50,),
                                      Container(
                                         height: 70,
-                                        width: 400,
+                                        width: 500,
                                         child: Row(
                                           children: [
                                             Container(width: 300,
 
                                               child: Text("${ouvrage?.nomOuvrage}",style: TextStyle(fontSize: 20),softWrap: true,)), 
-                                            const   SizedBox(width: 50),
-                                            Text(" ${ouvrage?.nomAuteur}"),
+                                            Container(width: 200, child: Text(" ${ouvrage?.nomAuteur}",style: TextStyle(fontSize: 20),softWrap: true,)),
                                           ],
                                        )) ,
 
@@ -260,7 +259,7 @@ class _InfolecteurpageState extends State<Infolecteurpage> {
                      
            TextButton(onPressed: (){
              Navigator.of(context).pushNamed(ouvrages_en_un_an,arguments: [lecteur,mysqlconnection]);
-           }, child:const Text("Afficher O.P.P.A") ),
+           }, child:const Text("Ouvrages pris en un an") ),
            SizedBox(height: 20,),
            Container(height: 200,
            child: FutureBuilder(

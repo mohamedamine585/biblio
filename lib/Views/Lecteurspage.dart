@@ -82,10 +82,11 @@ class _LecteurpageState extends State<Lecteurpage> {
                 future: personnel.get_lecteurs(mySqlConnection: mysqlconn),
                 builder: (context, snapshot) {
                    Lecteurs = snapshot.data  ;
-lecs = Lecteurs?.where((element) => element.prenom.toLowerCase().contains(s ?? "")  || (element.nom.toLowerCase().contains(s ?? "")) 
+                   
+                lecs = Lecteurs?.where((element) => element.prenom.toLowerCase().contains(s ?? "")  || (element.nom.toLowerCase().contains(s ?? "")) 
                   || element.prenom.toUpperCase().contains(s ?? "")  || (element.nom.toUpperCase().contains(s ?? "") )).toList() ?? [];
                   return ListView.builder(
-                      itemCount: lecs.length,
+                      itemCount:lecs.length ,
                       itemBuilder: (context,index){
                        
                       int temps_abonn_restant = 0;

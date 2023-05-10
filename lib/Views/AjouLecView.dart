@@ -212,7 +212,7 @@ class _AjouterLecteurState extends State<AjouterLecteur> {
                      abonnement = 3;
                    
                
-               if(_cinerror && _emailerror && _nomerror && _prenomerror){
+               if(!_cinerror && !_emailerror && !_nomerror && !_prenomerror){
                  final lecteur =Lecteur.define(null, nom.text, prenom.text, email.text,int.parse(cin.text), adresse.text, DateTime.now(),DateTime.now(), 0,0,0,1,abonnement,1);
                 bool added= await personnel.add_lecteur(mySqlConnection: mySqlConnection,lecteur: lecteur);
                 if(added) {

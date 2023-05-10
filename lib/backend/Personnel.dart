@@ -108,7 +108,7 @@ class Personnel {
  )async{
     try {
       final results = mySqlConnection.query(
-        "insert into lecteur(nomlecteur,prenomlecteur,email,addresse,cin,date_entree,date_abb,nb_prets,nb_prets_actuels,nb_alertes,fidelite,abonnement,nb_abonn) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?)",[
+        "insert into lecteur(nomlecteur,prenomlecteur,email,addresse,cin,date_entree,date_abb,nb_prets,nb_prets_actuels,nb_alertes,fidelite,abonnement,nb_abonn) values (?,?,?,?,?,?,?,?,?,?,?,?,?)",[
          lecteur. nom,lecteur. prenom,lecteur. email,lecteur. addresse,lecteur.Cin,DateTime.now().toUtc(),DateTime.now().toUtc(),0,0,0,0,lecteur.abonnement,1
         ]);
       return true;

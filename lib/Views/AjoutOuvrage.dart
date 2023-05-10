@@ -110,7 +110,7 @@ class _AjouterOuvrageState extends State<AjouterOuvrage> {
                        _prixerror = true;
                     }
                     else{
-                      _prixerror = false;
+                         _prixerror = false;
                     }
                    }); 
                   },
@@ -138,7 +138,8 @@ class _AjouterOuvrageState extends State<AjouterOuvrage> {
              
                const SizedBox(height: 40),
               TextButton(onPressed: ()async{    
-             if(_copyerror && _prixerror)  {  Ouvrage ouvrage =Ouvrage.define(null,nom.text, auteur.text, categorie.text , int.parse(nb.text), int.parse(nb.text), 0,double.parse(prix.text), DateTime.now().toUtc())        ;
+             if(!_copyerror && !_prixerror)  {  
+              Ouvrage ouvrage =Ouvrage.define(null,nom.text, auteur.text, categorie.text , int.parse(nb.text), int.parse(nb.text), 0,double.parse(prix.text), DateTime.now().toUtc())        ;
          final _added =   await  personnel.add_Ouvrage(mySqlConnection: mySqlConnection, ouvrage: ouvrage,context: context);
              if(_added)
              {

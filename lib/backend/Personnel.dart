@@ -123,10 +123,21 @@ class Personnel {
 
  Future<bool> supprimer_ouvrage({required MySqlConnection mySqlConnection , required Ouvrage ouvrage})async {
     try {
-      
-     await mySqlConnection.query("delete from avertissement where idpret in (select idpret from pret where idouvrage = ?);",[ouvrage.idouvrage]);
+     
+     Results results = await mySqlConnection.query("select avertissement.idlecteur from avertissement,pret where avertissement.idpret = pret.idpret and pret.idouvrage = ? ",[ouvrage.idouvrage]);
+     results.forEach((element) async{
+           await mySqlConnection.query("update lecteur set nb_alertes = nb_alertes -1 where idlecteur = ? ",[element["idlecteur"]]);
+
+      });
+      results = await mySqlConnection.query("select idlecteur from pret where idouvrage = ? and termine = 0",[ouvrage.idouvrage]);
+      results.forEach((element) async{
+         await mySqlConnection.query("update lecteur set nb_prets_actuels = nb_prets_actuels -1 where idlecteur = ? ",[element["idlecteur"]]);
+
+       });
+           await mySqlConnection.query("delete from avertissement where idpret in (select idpret from pret where idouvrage = ?);",[ouvrage.idouvrage]);
+
       await mySqlConnection.query("delete from pret where idouvrage = ?",[ouvrage.idouvrage]);
-      Results results = await mySqlConnection.query("delete from ouvrage where idouvrage = ? ",[
+       results = await mySqlConnection.query("delete from ouvrage where idouvrage = ? ",[
         ouvrage.idouvrage
       ]);
       
@@ -206,7 +217,7 @@ class Personnel {
       try {
      Results results =    await mySqlConnection.query("select idlecteur,idpret,idouvrage from pret where (fin_pret   <= ? ) and termine = 0 and  not exists ( select idlecteur,idpret from avertissement where pret.idlecteur = idlecteur and pret.idpret = idpret)",[
       DateTime.now().toUtc()
-     ]); 
+     ]);
      results.forEach((element) async{
      
             await mySqlConnection.query("insert into avertissement(idlecteur,idpret) values(?,?)",[
@@ -215,9 +226,10 @@ class Personnel {
             await mySqlConnection.query("update ouvrage set nb_perdu = nb_perdu + 1 where idouvrage = ?",[
               element["idouvrage"]
             ]);
+          
             await mySqlConnection.query("update lecteur set nb_alertes = nb_alertes +1  where idlecteur = ?",[
               element["idlecteur"]
-            ]);
+            ]);  
             await mySqlConnection.query(" update lecteur set fidelite = fidelite - 1 where fidelite > 0 and idlecteur = ?",[
               element["idlecteur"]
             ]);
@@ -354,13 +366,15 @@ class Personnel {
        required BuildContext context
     }
   )async{
-    try{  Results query_on_lecteur = await mySqlConnection.query("select idlecteur,abonnement,nb_alertes,nb_prets_actuels from lecteur where nomlecteur = ? and prenomlecteur = ? ",[
+    try{  Results query_on_lecteur = await mySqlConnection.query("select idlecteur,abonnement,nb_alertes,nb_prets_actuels,date_abb from lecteur where nomlecteur = ? and prenomlecteur = ? ",[
+
      pret. nomlecteur ,pret. prenomlecteur
     ]);
    
    if(query_on_lecteur.isNotEmpty){
-      
-   if(query_on_lecteur.elementAt(0)["abonnement"]*3 >query_on_lecteur.elementAt(0)["nb_prets_actuels"]) { 
+    DateTime date_abonn = query_on_lecteur.elementAt(0)["date_abb"] ;
+    if(date_abonn.add(Duration(days: 30)).isAfter(DateTime.now()) )  
+   {if(query_on_lecteur.elementAt(0)["abonnement"]*3 >query_on_lecteur.elementAt(0)["nb_prets_actuels"]) { 
     if(query_on_lecteur.elementAt(0)["nb_alertes"] < 3){ if( query_on_lecteur.elementAt(0)["abonnement"] < DateTimeRange(start:pret. debut_pret, end:pret. fin_pret).duration.inDays / 30 ){
       sd("L'abonnement de ce lecteur ne lui permet pas de preter ce livre pour toute cette période", context);
     }else{
@@ -396,6 +410,10 @@ class Personnel {
     }}
     else{
       sd("Nombre max de prets permi est atteint", context);
+    }
+    }
+    else{
+      sd("Abonnement expiré", context);
     }
     }
     else{

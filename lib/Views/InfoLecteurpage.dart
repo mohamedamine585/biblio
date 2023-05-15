@@ -188,7 +188,7 @@ class _InfolecteurpageState extends State<Infolecteurpage> {
                   if(ischecked3)
                      abonnement = 3;
                    
-               final bool updated =  await personnel.update_lecteur(mySqlConnection: mysqlconnection,nomlecteur: nom.text,prenomlecteur: prenom.text,abonnement: abonnement,idlecteur: lecteur.idlecteur ?? -1,email: email.text,context: context);
+               final bool updated =  await personnel.update_lecteur(mySqlConnection: mysqlconnection,nomlecteur: nom.text,prenomlecteur: prenom.text,abonnement: abonnement,idlecteur: lecteur.idlecteur ?? -1,email: email.text,addresse: adresse.text,cin: int.parse(cin.text),context: context);
              if(updated)
               { Navigator.pop(context);}
               else{

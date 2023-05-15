@@ -275,7 +275,7 @@ class Personnel {
   
 
     Future<bool> update_lecteur({required MySqlConnection mySqlConnection , required int abonnement ,required String email,
-     required String nomlecteur , required  String prenomlecteur  , required int idlecteur , required BuildContext context})async{
+     required String nomlecteur , required  String prenomlecteur  , required int idlecteur , required int cin , required String addresse , required BuildContext context })async{
       try {
             Results results = await mySqlConnection.query("select idlecteur from lecteur where nomlecteur  = ? and prenomlecteur= ? ", [
              nomlecteur,prenomlecteur
@@ -283,14 +283,14 @@ class Personnel {
          if(results.isNotEmpty   ) { 
               if(results.elementAt(0)["idlecteur"] == idlecteur)
               {
-                results=  await mySqlConnection.query("call injapp.update_lect_info(?,?,?,?,?,?)",[
-              abonnement,dateTime,nomlecteur,prenomlecteur,email,idlecteur
+                results=  await mySqlConnection.query("call injapp.update_lect_info(?,?,?,?,?,?,?,?)",[
+              abonnement,dateTime,nomlecteur,prenomlecteur,email,addresse,cin,idlecteur
             ]);return true;
               }
             
             }else{
-              results=  await mySqlConnection.query("call injapp.update_lect_info(?,?,?,?,?,?)",[
-              abonnement,dateTime,nomlecteur,prenomlecteur,email,idlecteur
+              results=  await mySqlConnection.query("call injapp.update_lect_info(?,?,?,?,?,?,?,?)",[
+              abonnement,dateTime,nomlecteur,prenomlecteur,email,addresse,cin,idlecteur
             ]);return true;
              
             }
@@ -570,7 +570,7 @@ Map<String,double> map = {
 Future<List<Lecteur>?> get_10lecteurs({required MySqlConnection mySqlConnection})async{
       try {
        
-      Results results =  await  mySqlConnection.query("select nomlecteur,prenomlecteur,nb_prets , (select count(idlecteur)  from pret where pret.idlecteur = lecteur.idlecteur  ) as count from lecteur order by count desc limit 10");
+      Results results =  await  mySqlConnection.query("select nomlecteur,prenomlecteur,nb_prets  from lecteur order by nb_prets desc limit 10");
       
     List<Lecteur> list = List<Lecteur>.generate(results.length, (index) {
         return Lecteur.forstats(

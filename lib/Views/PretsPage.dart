@@ -37,7 +37,7 @@ class _PretsPageState extends State<PretsPage> {
     final personnel = data[0] as Personnel ;
     final mysqlconn = data[1]as MySqlConnection ;
                          P = Prets.where((element) => (element!.nompersonnel.contains(s)  || (element.prenompersonnel.contains(s)) 
-                        || element.nomouvrage.contains(s)  || (element.auteur.contains(s) || (element.nomlecteur.contains(s)) ||(element.prenomlecteur.contains(s)) )) && (!actuelfiltre || (element.termine == 0))).toList();
+                        || element.nomouvrage.contains(s)  || (element.auteur.contains(s) || (element.nomlecteur.contains(s)) ||(element.prenomlecteur.contains(s)) )) && (actuelfiltre?true:((element.termine == 0)))).toList();
     int able_to_remove ;
     return  Scaffold(
       appBar: AppBar(
@@ -100,7 +100,7 @@ class _PretsPageState extends State<PretsPage> {
                 builder: (context, snapshot) {
                    Prets = snapshot.data ?? []  ;
                      P = Prets.where((element) => pret_cherche(element?.nomlecteur ?? ""
-                     , element?.prenomlecteur ?? "", element?.nomouvrage ?? "", element?.auteur ?? "", s)).toList();
+                     , element?.prenomlecteur ?? "", element?.nomouvrage ?? "", element?.auteur ?? "", s) && (!actuelfiltre || (element?.termine == 0))).toList();
                   return ListView.builder(
                       itemCount: P.length,
                       itemBuilder: (context,index){

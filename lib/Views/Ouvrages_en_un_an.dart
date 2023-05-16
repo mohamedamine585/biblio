@@ -25,7 +25,7 @@ class _Ouvrage_en_un_anState extends State<Ouvrage_en_un_an> {
         title: Text("Ouvrages en possesion en un an : ${lecteur.nom} ${lecteur.prenom}"),
       ),
       body: FutureBuilder(
-            future: lecteur.get_Ouvrages(mySqlConnection: conn),
+            future: lecteur.get_Ouvrages_en_un_an(mySqlConnection: conn),
             builder: (context,snapshot){
             if(snapshot.data != null) { return ListView.builder(
                 itemCount: snapshot.data?.length,

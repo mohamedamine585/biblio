@@ -110,7 +110,7 @@ late  DateTime? date_entree , date_abonnement ;
  Future<List<Ouvrage>?> get_Ouvrages_en_un_an({required MySqlConnection mySqlConnection })async{
      try {
     
-               final Results results = await mySqlConnection.query("call livres_en_un_an(?,?);",[
+               final Results results = await mySqlConnection.query("call livre_par_an_lecteur(?,?);",[
               idlecteur , DateTime.now().toUtc()
                ]);
           List<Ouvrage> list = List.generate(results.length, (index) {
